@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "frogface-rpg": {
+      "command": "node",
+      "args": ["server.js"],
+      "cwd": "./mcp-server",
+      "env": {
+        "NODE_ENV": "production"
+      }
+    }
+  }
+}

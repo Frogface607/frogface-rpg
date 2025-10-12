@@ -1,0 +1,364 @@
+[
+  {
+    "id": "TC001",
+    "title": "Task Creation via Manual Input",
+    "description": "Verify that users can create new tasks manually through the Todo interface and the tasks are correctly saved, displayed, and contribute to reward calculation.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the Todo task creation page."
+      },
+      {
+        "type": "action",
+        "description": "Enter valid task details with varying priority levels."
+      },
+      {
+        "type": "action",
+        "description": "Submit the new task."
+      },
+      {
+        "type": "assertion",
+        "description": "Validate the task is displayed in the task list with accurate priority info."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the reward points pool updates correctly based on task priority."
+      }
+    ]
+  },
+  {
+    "id": "TC002",
+    "title": "Task Creation via Voice Command Using MCP",
+    "description": "Verify that the voice-to-quest feature reliably converts spoken input into Todo tasks with accurate extraction of task details, priority, emotional state, and project categorization.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Open the voice input interface and speak distinct task commands."
+      },
+      {
+        "type": "action",
+        "description": "Wait for the MCP server to process and create quests automatically."
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm tasks appear in the Todo list with correct text, priority, and categorization (Edison, Receptor, FrogFace, Personal)."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the success rate of task extraction is at least 80% with partial or no errors."
+      }
+    ]
+  },
+  {
+    "id": "TC003",
+    "title": "Task Completion Updates Rewards and Streaks",
+    "description": "Verify that marking a task completed updates the reward points, streak counters, and RPG experience points in real-time with UI feedback.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Complete a task from the Todo list."
+      },
+      {
+        "type": "assertion",
+        "description": "Check reward points increase according to task priority and complexity."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify streak count increments or resets correctly following task completion."
+      },
+      {
+        "type": "assertion",
+        "description": "Ensure life stats and XP are updated visually and numerically."
+      }
+    ]
+  },
+  {
+    "id": "TC004",
+    "title": "Pomodoro Timer Functionality and Auto Boost Completion",
+    "description": "Validate that the Pomodoro timer respects custom work and break durations, triggers sound notifications, and after four completed sessions automatically grants a focus boost reward.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Configure Pomodoro timer work and break intervals."
+      },
+      {
+        "type": "action",
+        "description": "Start Pomodoro session and complete four consecutive work sessions with breaks."
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm that sound notifications play at start/end of sessions."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that after four sessions a focus boost reward is automatically added."
+      },
+      {
+        "type": "assertion",
+        "description": "Ensure session count resets properly after boosting."
+      }
+    ]
+  },
+  {
+    "id": "TC005",
+    "title": "Boost Management: Creation, Search, Filtering, and Customization",
+    "description": "Test functionality for adding custom boosts, searching and filtering among the 40+ activity boosts, and validating reward scaling behaves as expected.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Create a new custom boost with specified category and reward values."
+      },
+      {
+        "type": "action",
+        "description": "Search boosts by keyword and filter by category."
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm new custom boost appears in search results and filters accurately."
+      },
+      {
+        "type": "assertion",
+        "description": "Validate dynamic reward scaling according to user settings and boost parameters."
+      }
+    ]
+  },
+  {
+    "id": "TC006",
+    "title": "Achievement Unlocking and Level Progression",
+    "description": "Ensure that users earn achievements correctly when criteria are met, see animated notifications, and that level progression increments with XP gains.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Complete tasks and activities required to unlock achievements."
+      },
+      {
+        "type": "assertion",
+        "description": "Validate that achievement icons visually highlight with animations."
+      },
+      {
+        "type": "assertion",
+        "description": "Check that XP updates push level progress bars forward appropriately."
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm rewards associated with achievements are correctly awarded."
+      }
+    ]
+  },
+  {
+    "id": "TC007",
+    "title": "Life Stats Tracking and Chart.js Visualization",
+    "description": "Validate that life stats (Energy, Mind, Power, Social, Pro) are tracked accurately based on user activities and displayed with color-coded feedback using Chart.js visualizations.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Perform activities and complete tasks affecting life stats."
+      },
+      {
+        "type": "assertion",
+        "description": "Check the stats dashboard updates with correct values."
+      },
+      {
+        "type": "assertion",
+        "description": "Validate color-coded feedback matches stat levels."
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm Chart.js graphs render without errors and reflect current data."
+      }
+    ]
+  },
+  {
+    "id": "TC008",
+    "title": "Social Sharing Card Generation and Export",
+    "description": "Verify that users can generate customizable achievement and progress cards in PNG format or clipboard copy with options to hide rewards values for privacy.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Open the sharing interface and select achievement or progress card to generate."
+      },
+      {
+        "type": "action",
+        "description": "Toggle hiding monetary reward sums on the card."
+      },
+      {
+        "type": "action",
+        "description": "Export the card as PNG and copy the card image to clipboard."
+      },
+      {
+        "type": "assertion",
+        "description": "Validate that generated PNG matches selected style and shows/hides reward values as chosen."
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm clipboard copy contains correct image data."
+      }
+    ]
+  },
+  {
+    "id": "TC009",
+    "title": "LocalStorage Persistence with Auto-save and Session Recovery",
+    "description": "Verify that user data including tasks, stats, XP, and settings persist in localStorage, auto-save is triggered on changes, and data correctly reloads after browser refresh or restart.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Create tasks, modify settings, and update stats."
+      },
+      {
+        "type": "action",
+        "description": "Refresh or close and reopen the browser tab."
+      },
+      {
+        "type": "assertion",
+        "description": "Validate that all data restored matches the last saved state."
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm no data loss or mismatch on reload."
+      }
+    ]
+  },
+  {
+    "id": "TC010",
+    "title": "System Reset: Soft and Full Reset with Confirmation",
+    "description": "Ensure that performing a soft reset retains key user data but clears progress appropriately, while full reset clears all data after user confirms via modal dialogs.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Initiate soft reset and confirm via modal."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify selective clearing of progress while preserving settings."
+      },
+      {
+        "type": "action",
+        "description": "Initiate full reset and confirm via modal."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify complete clearing of all game data with fresh start state."
+      }
+    ]
+  },
+  {
+    "id": "TC011",
+    "title": "UI Responsiveness Across Devices",
+    "description": "Validate the dark-themed RPG UI is fully responsive, accessible, and visually consistent across desktop, tablet, and mobile platforms with Tailwind CSS and animations.",
+    "category": "ui",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Open the application on desktop, tablet, and mobile devices."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify layout adapts properly to different screen sizes."
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm all interactive elements are accessible and visible."
+      },
+      {
+        "type": "assertion",
+        "description": "Check that CSS animations run smoothly without UI glitches."
+      }
+    ]
+  },
+  {
+    "id": "TC012",
+    "title": "Error Handling for Voice Input and MCP Server Connection Failures",
+    "description": "Test system behavior and user feedback when voice input fails or MCP server returns errors or is unreachable.",
+    "category": "error handling",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Simulate MCP server downtime or network failure."
+      },
+      {
+        "type": "action",
+        "description": "Attempt to use voice-to-quest input."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that appropriate error messages are displayed to the user."
+      },
+      {
+        "type": "assertion",
+        "description": "Check system does not crash and normal task creation remains functional."
+      }
+    ]
+  },
+  {
+    "id": "TC013",
+    "title": "Reward Scaling and Custom Budget Adjustments",
+    "description": "Confirm that users can dynamically set budgets, adjust reward values, and observe immediate changes in reward calculations and scaling across tasks and boosts.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Open reward settings and set a custom budget."
+      },
+      {
+        "type": "action",
+        "description": "Adjust individual task or boost reward values."
+      },
+      {
+        "type": "assertion",
+        "description": "Validate the reward scaling reflects changes throughout the app in real-time."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify no discrepancies between budget cap and displayed rewards."
+      }
+    ]
+  },
+  {
+    "id": "TC014",
+    "title": "AI Game Master Quest Adaptation and Coaching",
+    "description": "Verify the AI Game Master generates adaptive quests and personalized coaching messages based on user life stats, progress, and current activities.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Complete several varied activities affecting life stats."
+      },
+      {
+        "type": "action",
+        "description": "Request or wait for daily AI Game Master quest generation and advice."
+      },
+      {
+        "type": "assertion",
+        "description": "Validate quests are relevant to the user’s current stat states."
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm coaching messages display clear, motivational guidance."
+      }
+    ]
+  }
+]

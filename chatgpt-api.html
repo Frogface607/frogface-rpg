@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FrogFace RPG - ChatGPT API</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #fff;
+        }
+        .container {
+            background: #2d2d2d;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #00ff88;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .api-section {
+            background: #3d3d3d;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border-left: 4px solid #00ff88;
+        }
+        .endpoint {
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+        }
+        .method {
+            color: #00ff88;
+            font-weight: bold;
+        }
+        .url {
+            color: #ff6b6b;
+        }
+        .description {
+            color: #ccc;
+            margin-top: 10px;
+        }
+        .example {
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border: 1px solid #555;
+        }
+        .copy-btn {
+            background: #00ff88;
+            color: #000;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .copy-btn:hover {
+            background: #00cc6a;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .success {
+            background: #00ff88;
+            color: #000;
+        }
+        .error {
+            background: #ff6b6b;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🐸 FrogFace RPG - ChatGPT API</h1>
+        
+        <div class="status success">
+            ✅ <strong>Сервер работает!</strong> ChatGPT может использовать эти API endpoints
+        </div>
+
+        <div class="api-section">
+            <h3>🎯 Добавить квест</h3>
+            <div class="endpoint">
+                <span class="method">POST</span> <span class="url">http://localhost:8080/api/add-quest</span>
+                <button class="copy-btn" onclick="copyToClipboard('http://localhost:8080/api/add-quest')">Копировать</button>
+            </div>
+            <div class="description">
+                Создает новый квест в FrogFace RPG
+            </div>
+            <div class="example">
+                <strong>Пример запроса:</strong><br>
+                <pre>{
+  "title": "Разобраться с Edison Bar",
+  "priority": "high",
+  "project": "Edison",
+  "description": "Проблемы с персоналом"
+}</pre>
+            </div>
+        </div>
+
+        <div class="api-section">
+            <h3>🧠 Анализ голосового потока</h3>
+            <div class="endpoint">
+                <span class="method">POST</span> <span class="url">http://localhost:8080/api/analyze-voice</span>
+                <button class="copy-btn" onclick="copyToClipboard('http://localhost:8080/api/analyze-voice')">Копировать</button>
+            </div>
+            <div class="description">
+                Анализирует голосовой поток и извлекает задачи
+            </div>
+            <div class="example">
+                <strong>Пример запроса:</strong><br>
+                <pre>{
+  "voice_text": "Нужно разобраться с Edison Bar, доделать Receptor презентацию",
+  "user_context": {}
+}</pre>
+            </div>
+        </div>
+
+        <div class="api-section">
+            <h3>📊 Получить статистику</h3>
+            <div class="endpoint">
+                <span class="method">GET</span> <span class="url">http://localhost:8080/api/stats</span>
+                <button class="copy-btn" onclick="copyToClipboard('http://localhost:8080/api/stats')">Копировать</button>
+            </div>
+            <div class="description">
+                Получает текущую статистику пользователя
+            </div>
+        </div>
+
+        <div class="api-section">
+            <h3>🎮 Открыть FrogFace RPG</h3>
+            <div class="endpoint">
+                <span class="method">GET</span> <span class="url">http://localhost:8080/</span>
+                <button class="copy-btn" onclick="window.open('index.html', '_blank')">Открыть игру</button>
+            </div>
+            <div class="description">
+                Основное приложение FrogFace RPG
+            </div>
+        </div>
+
+        <div class="api-section">
+            <h3>🚀 Как использовать в ChatGPT</h3>
+            <div class="description">
+                <strong>1.</strong> Скопируй нужный URL<br>
+                <strong>2.</strong> В ChatGPT скажи: "Вызови API http://localhost:8080/api/add-quest с данными..."<br>
+                <strong>3.</strong> ChatGPT создаст квест в твоей RPG!<br><br>
+                <strong>Пример команды:</strong><br>
+                <em>"Вызови POST http://localhost:8080/api/add-quest с JSON: {title: 'Разобраться с Edison Bar', priority: 'high', project: 'Edison'}"</em>
+            </div>
+        </div>
+
+        <div class="api-section">
+            <h3>🎤 Голосовые команды</h3>
+            <div class="description">
+                Скажи в ChatGPT:<br>
+                <em>"Проанализируй этот текст и создай квесты: 'Нужно разобраться с Edison Bar, доделать Receptor презентацию'"</em><br><br>
+                ChatGPT автоматически:<br>
+                ✅ Вызовет API анализа<br>
+                ✅ Создаст квесты через API<br>
+                ✅ Покажет результат
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('URL скопирован в буфер обмена!');
+            });
+        }
+
+        // Проверяем статус сервера
+        fetch('http://localhost:8080/health')
+            .then(response => response.json())
+            .then(data => {
+                console.log('Server status:', data);
+            })
+            .catch(error => {
+                console.error('Server not running:', error);
+                document.querySelector('.status').innerHTML = 
+                    '❌ <strong>Сервер не запущен!</strong> Запусти: <code>node http-server.js</code>';
+                document.querySelector('.status').className = 'status error';
+            });
+    </script>
+</body>
+</html>
+
+

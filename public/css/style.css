@@ -1,0 +1,544 @@
+/* Custom RPG Styles */
+.game-font {
+    font-family: 'Orbitron', monospace;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1f2937;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #6b46c1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #7c3aed;
+}
+
+/* Glow effects */
+.glow-purple {
+    box-shadow: 0 0 20px rgba(147, 51, 234, 0.3);
+    border: 1px solid rgba(147, 51, 234, 0.5);
+}
+
+.glow-green {
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
+    border: 1px solid rgba(34, 197, 94, 0.5);
+}
+
+.glow-orange {
+    box-shadow: 0 0 20px rgba(249, 115, 22, 0.3);
+    border: 1px solid rgba(249, 115, 22, 0.5);
+}
+
+.glow-yellow {
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+    border: 1px solid rgba(245, 158, 11, 0.5);
+}
+
+/* Boost Card Animations */
+.boost-card {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.boost-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.boost-card.active {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    box-shadow: 0 0 20px rgba(5, 150, 105, 0.4);
+    border: 2px solid #10b981;
+}
+
+.boost-card.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.boost-card.disabled:hover {
+    transform: none;
+}
+
+/* Progress Bar Animations */
+#progressBar {
+    transition: width 0.8s ease-in-out;
+}
+
+/* Streak Fire Animation */
+.streak-fire {
+    animation: fireFlicker 2s infinite alternate;
+}
+
+@keyframes fireFlicker {
+    0% { transform: scale(1) rotate(-1deg); opacity: 0.9; }
+    50% { transform: scale(1.05) rotate(1deg); opacity: 1; }
+    100% { transform: scale(1.02) rotate(-0.5deg); opacity: 0.95; }
+}
+
+/* Level up animation */
+.level-up {
+    animation: levelUp 1s ease-out;
+}
+
+@keyframes levelUp {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Money counter animation */
+.money-increase {
+    animation: moneyPulse 0.6s ease-out;
+}
+
+@keyframes moneyPulse {
+    0% { transform: scale(1); color: inherit; }
+    50% { transform: scale(1.15); color: #fbbf24; }
+    100% { transform: scale(1); color: inherit; }
+}
+
+/* Button hover effects */
+.btn-hover-scale {
+    transition: transform 0.2s ease;
+}
+
+.btn-hover-scale:hover {
+    transform: scale(1.02);
+}
+
+/* Notification styles */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 16px 24px;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    z-index: 1000;
+    animation: slideIn 0.3s ease-out, slideOut 0.3s ease-in 2.7s;
+    animation-fill-mode: both;
+}
+
+.notification.success {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+}
+
+.notification.error {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+}
+
+.notification.warning {
+    background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideOut {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(100%); opacity: 0; }
+}
+
+@keyframes slideInRight {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+/* History entry styles */
+.history-entry {
+    transition: all 0.3s ease;
+}
+
+.history-entry:hover {
+    transform: translateX(4px);
+    background-color: rgba(75, 85, 99, 0.3);
+}
+
+.history-entry.clean-day {
+    border-left: 4px solid #10b981;
+}
+
+.history-entry.relapse-day {
+    border-left: 4px solid #ef4444;
+}
+
+.history-entry.recovery-day {
+    border-left: 4px solid #f59e0b;
+}
+
+/* Chart container */
+.chart-container {
+    position: relative;
+    height: 400px;
+    width: 100%;
+}
+
+/* Responsive design improvements */
+@media (max-width: 768px) {
+    .container {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+    
+    .grid {
+        gap: 16px;
+    }
+    
+    .text-4xl {
+        font-size: 2rem;
+    }
+    
+    .text-3xl {
+        font-size: 1.5rem;
+    }
+}
+
+/* Custom checkbox styles for boosts */
+.boost-checkbox {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #6b7280;
+    border-radius: 4px;
+    background-color: transparent;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.boost-checkbox:checked {
+    background-color: #10b981;
+    border-color: #10b981;
+}
+
+.boost-checkbox:checked::after {
+    content: '✓';
+    position: absolute;
+    top: -2px;
+    left: 2px;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* Floating action button */
+.fab {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.fab:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.4);
+}
+
+/* Day status badges */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.status-badge.clean {
+    background-color: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.status-badge.relapse {
+    background-color: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.status-badge.recovery {
+    background-color: rgba(245, 158, 11, 0.2);
+    color: #f59e0b;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+/* Loading animation */
+.loading {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Gradient text */
+.gradient-text {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Card hover effects */
+.card-hover {
+    transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* Achievement styles */
+.achievement-card {
+    transition: all 0.3s ease;
+}
+
+.achievement-card:hover {
+    transform: translateY(-2px);
+}
+
+.achievement-notification {
+    border: 2px solid rgba(251, 191, 36, 0.5);
+    backdrop-filter: blur(10px);
+}
+
+/* Achievement unlock animation */
+.achievement-unlock {
+    animation: achievementPop 0.6s ease-out;
+}
+
+@keyframes achievementPop {
+    0% { transform: scale(0.8) rotate(-5deg); opacity: 0; }
+    50% { transform: scale(1.1) rotate(2deg); opacity: 0.8; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+/* Settings Modal Styles */
+.preset-btn {
+    text-align: center;
+}
+
+.preset-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.preset-btn.active {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    border-color: #6366f1;
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+}
+
+/* Custom Slider Styles */
+.slider {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    background: #374151;
+    border-radius: 3px;
+    outline: none;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+    transition: all 0.2s ease;
+}
+
+.slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.5);
+}
+
+.slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+}
+
+/* Settings input styles */
+#settingsModal input[type="number"] {
+    transition: all 0.2s ease;
+}
+
+#settingsModal input[type="number"]:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+/* Settings calculation preview */
+.settings-preview {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+}
+
+/* Confirmation Modal Styles */
+.confirm-modal {
+    backdrop-filter: blur(8px);
+}
+
+.confirm-modal .modal-content {
+    animation: modalPop 0.3s ease-out;
+}
+
+@keyframes modalPop {
+    0% { transform: scale(0.7); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* Danger zone styling */
+.danger-zone {
+    background: linear-gradient(135deg, rgba(220, 38, 38, 0.1) 0%, rgba(185, 28, 28, 0.1) 100%);
+    border: 1px solid rgba(220, 38, 38, 0.2);
+}
+
+/* Reset button hover effects */
+#resetProgress:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+}
+
+#resetEverything:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+}
+
+/* Boost Manager Styles */
+.boost-library-card {
+    transition: all 0.2s ease;
+}
+
+.boost-library-card:hover {
+    transform: translateY(-2px);
+}
+
+.boost-library-card.selected {
+    background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+    border-color: #7c3aed;
+}
+
+#boostManagerModal .modal-content {
+    max-width: 1200px;
+}
+
+/* Boost search and filter styling */
+#boostSearch:focus, #categoryFilter:focus {
+    border-color: #7c3aed;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+}
+
+/* Custom boost styles */
+.boost-library-card .edit-custom-boost,
+.boost-library-card .delete-custom-boost {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.boost-library-card:hover .edit-custom-boost,
+.boost-library-card:hover .delete-custom-boost {
+    opacity: 1;
+}
+
+.edit-custom-boost:hover {
+    color: #60a5fa !important;
+}
+
+.delete-custom-boost:hover {
+    color: #f87171 !important;
+}
+
+/* Custom boost form animations */
+#customBoostForm {
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Green glow for custom boosts */
+.glow-green {
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
+    border: 1px solid rgba(34, 197, 94, 0.5);
+}
+
+/* Emoji selector styles */
+#emojiGrid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 4px;
+    animation: slideDown 0.2s ease-out;
+}
+
+.emoji-option {
+    cursor: pointer;
+}
+
+.emoji-option:hover {
+    background-color: #4b5563 !important;
+    transform: scale(1.1);
+}
+
+/* Confirm Modal Button Styles */
+.confirm-btn, .cancel-btn {
+    position: relative;
+    z-index: 10;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.confirm-btn:hover {
+    opacity: 0.8 !important;
+    transform: translateY(-1px);
+}
+
+.cancel-btn:hover {
+    background-color: #4b5563 !important;
+    transform: translateY(-1px);
+}
+
+.confirm-btn:active, .cancel-btn:active {
+    transform: translateY(0);
+}
+
+/* Ensure modal buttons are always on top */
+.confirm-btn, .cancel-btn {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}

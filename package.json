@@ -1,0 +1,27 @@
+{
+  "name": "frogface-rpg",
+  "version": "1.0.0",
+  "description": "AI-powered life management and gamification system",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'No build step needed'",
+    "start": "echo 'Deployed to Vercel'"
+  },
+  "dependencies": {
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "@vercel/node": "^3.0.0"
+  },
+  "keywords": [
+    "rpg",
+    "gamification",
+    "ai",
+    "productivity",
+    "chatgpt",
+    "mcp"
+  ],
+  "author": "Sergey",
+  "license": "MIT"
+}

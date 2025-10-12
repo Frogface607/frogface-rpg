@@ -1,0 +1,24 @@
+{
+  "name": "frogface-mcp-server",
+  "version": "1.0.0",
+  "description": "MCP Server для интеграции ChatGPT с FrogFace RPG",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "api": "node api-server.js",
+    "http": "node http-server.js",
+    "dev": "node --watch server.js",
+    "test": "node test-server.js",
+    "quick-test": "node quick-test.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.4.0",
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1"
+  },
+  "keywords": ["mcp", "chatgpt", "productivity", "rpg", "ai"],
+  "author": "Sergey Orlov <sergey@frogface.ai>",
+  "license": "MIT"
+}

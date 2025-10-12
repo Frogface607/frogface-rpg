@@ -1,0 +1,94 @@
+{
+  "tech_stack": [
+    "HTML5",
+    "CSS3", 
+    "Vanilla JavaScript",
+    "Node.js",
+    "Express.js",
+    "Model Context Protocol (MCP)",
+    "localStorage",
+    "Chart.js",
+    "Tailwind CSS",
+    "Font Awesome",
+    "Google Fonts"
+  ],
+  "features": [
+    {
+      "name": "DetoxRPG Game System",
+      "description": "Main game class managing RPG mechanics, streaks, rewards, and life stats",
+      "files": ["js/app.js"]
+    },
+    {
+      "name": "Pomodoro Timer",
+      "description": "Focus timer with work/break sessions, sound controls, and session tracking",
+      "files": ["js/app.js"]
+    },
+    {
+      "name": "Todo Task Management",
+      "description": "Task creation, completion, rewards calculation, and daily tracking",
+      "files": ["js/app.js"]
+    },
+    {
+      "name": "Life Stats System",
+      "description": "Energy, Mind, Power, Social, and Pro stats tracking and visualization",
+      "files": ["js/app.js"]
+    },
+    {
+      "name": "Achievement System",
+      "description": "Unlockable achievements with rewards and progress tracking",
+      "files": ["js/app.js"]
+    },
+    {
+      "name": "MCP Server Integration",
+      "description": "ChatGPT voice-to-quest integration via Model Context Protocol",
+      "files": ["mcp-server/server.js", "mcp-server/frogface-api.js", "mcp-server/frogface-bridge.js"]
+    },
+    {
+      "name": "HTTP API Server",
+      "description": "Express server exposing MCP tools and FrogFace RPG API endpoints",
+      "files": ["simple-server.js", "mcp-server/http-server.js"]
+    },
+    {
+      "name": "Voice Analysis Engine",
+      "description": "AI-powered task extraction from voice streams with project detection",
+      "files": ["mcp-server/frogface-bridge.js"]
+    },
+    {
+      "name": "Project Detection",
+      "description": "Smart categorization of tasks into Edison/Receptor/FrogFace/Personal projects",
+      "files": ["mcp-server/frogface-bridge.js"]
+    },
+    {
+      "name": "Reward Calculation",
+      "description": "Dynamic reward calculation based on priority, urgency, and complexity",
+      "files": ["mcp-server/frogface-bridge.js", "js/app.js"]
+    },
+    {
+      "name": "LocalStorage Persistence",
+      "description": "Client-side data persistence for game state, tasks, and progress",
+      "files": ["js/app.js"]
+    },
+    {
+      "name": "RPG UI Components",
+      "description": "Dark-themed RPG interface with animations, modals, and responsive design",
+      "files": ["index.html", "css/style.css"]
+    },
+    {
+      "name": "Statistics Visualization",
+      "description": "Charts and graphs for progress tracking using Chart.js",
+      "files": ["js/app.js"]
+    },
+    {
+      "name": "AI Coach Integration",
+      "description": "AI-powered advice and motivation system",
+      "files": ["js/app.js"]
+    },
+    {
+      "name": "Share and Export",
+      "description": "Progress sharing and data export functionality",
+      "files": ["js/app.js"]
+    }
+  ]
+}
+
+

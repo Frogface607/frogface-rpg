@@ -1,0 +1,32 @@
+{
+  "gameState": {
+    "currentDay": 1,
+    "totalPot": 0,
+    "streak": 0,
+    "level": 1,
+    "totalXP": 0,
+    "stats": {
+      "energy": 8,
+      "mind": 60,
+      "power": 82,
+      "social": 58,
+      "pro": 75
+    },
+    "knowledgeBase": [],
+    "currentEpicQuest": null,
+    "epicQuestHistory": []
+  },
+  "todoState": {
+    "tasks": [
+      {
+        "id": "task-1760210000667-l8z0a9j40",
+        "text": "Ручной тест API",
+        "priority": "high",
+        "completed": false,
+        "createdAt": "2025-10-11T19:13:20.667Z",
+        "reward": 229
+      }
+    ]
+  },
+  "projects": []
+}

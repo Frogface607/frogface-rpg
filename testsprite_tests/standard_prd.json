@@ -1,0 +1,187 @@
+{
+  "meta": {
+    "project": "FrogFace RPG",
+    "date": "2025-10-04",
+    "prepared_by": "Software Development Manager"
+  },
+  "product_overview": "FrogFace RPG is a web-based gamified productivity system integrating RPG mechanics, a Pomodoro timer, and Todo task management, enhanced with revolutionary voice integration via ChatGPT and Model Context Protocol (MCP) for automated quest creation from voice commands. It motivates users through real-money rewards, progress tracking, and AI coaching.",
+  "core_goals": [
+    "Transform personal development and productivity into an engaging RPG-style game.",
+    "Integrate voice-to-quest functionality using ChatGPT MCP for automatic task extraction and project detection.",
+    "Provide a motivating reward system with real money payouts for task completion and milestones.",
+    "Offer a comprehensive Todo system with task prioritization, streaks, and daily bonuses.",
+    "Track life stats (Energy, Mind, Power, Social, Pro) and visualize progress with interactive charts.",
+    "Incorporate an AI Game Master for adaptive quests, personalized coaching, and motivation.",
+    "Enable social sharing with customizable achievement and progress cards.",
+    "Ensure seamless client-side persistence through LocalStorage for offline availability."
+  ],
+  "key_features": [
+    "DetoxRPG game system managing RPG mechanics, streaks, and rewards.",
+    "Pomodoro timer with customizable work/break sessions, sound controls, and automatic boost completion.",
+    "Todo task management with creation, completion, deletion, priority-based reward calculation, and daily streak bonuses.",
+    "Life stats tracking and visualization: Energy, Mind, Power, Social, Pro stats with color-coded feedback.",
+    "Achievement system with 9 unique achievements and level progression based on XP earned.",
+    "ChatGPT MCP server integration enabling voice-to-quest feature with AI-powered task extraction, priority and emotional state detection.",
+    "Smart project detection categorizing tasks into Edison, Receptor, FrogFace, and Personal projects.",
+    "Reward scaling and customization allowing users to set budgets and adjust reward values dynamically.",
+    "40+ activity boosts across multiple categories with search, filtering and custom boost creation capabilities.",
+    "Dark-themed RPG UI design with animations, modals, responsive layout, and modern fonts and icons.",
+    "Statistics visualization using Chart.js including daily history, progress bars, and graphical summaries.",
+    "Built-in sharing system generating PNG cards for achievements, streaks, goals, and daily summaries.",
+    "Comprehensive goal saving and tracking system with pre-set and custom financial targets.",
+    "LocalStorage-based persistent data storage with auto-save and session recovery.",
+    "System reset options for soft and full progress clearing with confirmation dialogs."
+  ],
+  "user_flow_summary": [
+    "User opens the FrogFace RPG web app on any device and reviews the rules via the help modal.",
+    "User selects or switches challenge types and customizes reward settings according to personal budget.",
+    "User adds new tasks manually or by speaking into ChatGPT voice which, via MCP server, auto-creates quests in the RPG.",
+    "User activates daily boosts by selecting activities or completing Pomodoro focus sessions that automatically register boosts.",
+    "User completes tasks, marks clean days, or logs relapses; the app calculates rewards and updates streaks accordingly.",
+    "The AI Game Master provides personalized daily quests and contextual advice tailored to user's current stats and progress.",
+    "User tracks life stats and visual progress on dash board and charts, engages with achievements and levels up.",
+    "User generates and shares social cards highlighting accomplishments while configuring privacy regarding reward visibility.",
+    "User's game state and progress persist locally, allowing continuation across sessions with options to reset or export data."
+  ],
+  "validation_criteria": [
+    "All core RPG mechanics correctly track streaks, rewards, and life stats with UI feedback.",
+    "Voice integration must accurately convert spoken plans into actionable quests with at least 80% task extraction accuracy.",
+    "Pomodoro timer respects configured durations, triggers sound notifications, and auto-completes focus boost rewards after 4 sessions.",
+    "Task creation, toggling, and deletion update reward pools and streaks in real-time without data loss.",
+    "Achievement unlocking and level progression reflect correctly with animated notifications and reward calculation.",
+    "Boost management, including custom boosts creation, search, filtering, and auto-scaling of rewards, functions as expected.",
+    "Chart.js visualizations show correct and current progress data with responsive rendering.",
+    "Social sharing cards generate correctly in chosen styles with options to hide monetary sums and export as PNG or clipboard copy.",
+    "All user data persists in localStorage with autosave, session recovery, and consistent state after reloads.",
+    "Reset actions prompt confirmation modals and correctly clear or preserve data as intended.",
+    "UI is responsive and accessible across devices with proper use of Tailwind CSS, icons, fonts, and animations.",
+    "Backend MCP server reliably interfaces with ChatGPT Desktop App for voice input, task extraction, and project classification."
+  ],
+  "code_summary": {
+    "tech_stack": [
+      "HTML5",
+      "CSS3",
+      "Vanilla JavaScript",
+      "Node.js",
+      "Express.js",
+      "Model Context Protocol (MCP)",
+      "localStorage",
+      "Chart.js",
+      "Tailwind CSS",
+      "Font Awesome",
+      "Google Fonts"
+    ],
+    "features": [
+      {
+        "name": "DetoxRPG Game System",
+        "description": "Main game class managing RPG mechanics, streaks, rewards, and life stats",
+        "files": [
+          "js/app.js"
+        ]
+      },
+      {
+        "name": "Pomodoro Timer",
+        "description": "Focus timer with work/break sessions, sound controls, and session tracking",
+        "files": [
+          "js/app.js"
+        ]
+      },
+      {
+        "name": "Todo Task Management",
+        "description": "Task creation, completion, rewards calculation, and daily tracking",
+        "files": [
+          "js/app.js"
+        ]
+      },
+      {
+        "name": "Life Stats System",
+        "description": "Energy, Mind, Power, Social, and Pro stats tracking and visualization",
+        "files": [
+          "js/app.js"
+        ]
+      },
+      {
+        "name": "Achievement System",
+        "description": "Unlockable achievements with rewards and progress tracking",
+        "files": [
+          "js/app.js"
+        ]
+      },
+      {
+        "name": "MCP Server Integration",
+        "description": "ChatGPT voice-to-quest integration via Model Context Protocol",
+        "files": [
+          "mcp-server/server.js",
+          "mcp-server/frogface-api.js",
+          "mcp-server/frogface-bridge.js"
+        ]
+      },
+      {
+        "name": "HTTP API Server",
+        "description": "Express server exposing MCP tools and FrogFace RPG API endpoints",
+        "files": [
+          "simple-server.js",
+          "mcp-server/http-server.js"
+        ]
+      },
+      {
+        "name": "Voice Analysis Engine",
+        "description": "AI-powered task extraction from voice streams with project detection",
+        "files": [
+          "mcp-server/frogface-bridge.js"
+        ]
+      },
+      {
+        "name": "Project Detection",
+        "description": "Smart categorization of tasks into Edison/Receptor/FrogFace/Personal projects",
+        "files": [
+          "mcp-server/frogface-bridge.js"
+        ]
+      },
+      {
+        "name": "Reward Calculation",
+        "description": "Dynamic reward calculation based on priority, urgency, and complexity",
+        "files": [
+          "mcp-server/frogface-bridge.js",
+          "js/app.js"
+        ]
+      },
+      {
+        "name": "LocalStorage Persistence",
+        "description": "Client-side data persistence for game state, tasks, and progress",
+        "files": [
+          "js/app.js"
+        ]
+      },
+      {
+        "name": "RPG UI Components",
+        "description": "Dark-themed RPG interface with animations, modals, and responsive design",
+        "files": [
+          "index.html",
+          "css/style.css"
+        ]
+      },
+      {
+        "name": "Statistics Visualization",
+        "description": "Charts and graphs for progress tracking using Chart.js",
+        "files": [
+          "js/app.js"
+        ]
+      },
+      {
+        "name": "AI Coach Integration",
+        "description": "AI-powered advice and motivation system",
+        "files": [
+          "js/app.js"
+        ]
+      },
+      {
+        "name": "Share and Export",
+        "description": "Progress sharing and data export functionality",
+        "files": [
+          "js/app.js"
+        ]
+      }
+    ]
+  }
+}

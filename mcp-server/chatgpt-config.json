@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "frogface-rpg": {
+      "command": "node",
+      "args": ["server.js"],
+      "cwd": "C:\\Users\\Sergey\\Documents\\FROGFACE RPG\\code_sandbox_light_d5811896_1760120227\\mcp-server",
+      "env": {
+        "NODE_ENV": "production"
+      }
+    }
+  }
+}

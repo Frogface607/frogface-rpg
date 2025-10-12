@@ -1,0 +1,16 @@
+{
+  "status": "commited",
+  "type": "frontend",
+  "scope": "codebase",
+  "localEndpoint": "http://localhost:8080",
+  "executionArgs": {
+    "projectName": "frogface-rpg",
+    "projectPath": "C:\\Users\\Sergey\\Documents\\FROGFACE RPG\\code_sandbox_light_d5811896_1760120227",
+    "testIds": [],
+    "additionalInstruction": "Focus on testing the core RPG mechanics, task management, and ChatGPT MCP integration. Test the voice-to-quest functionality and ensure all game features work properly.",
+    "envs": {
+      "API_KEY": "sk-user--DY31L38Xa1KWHzTTLCwyI31qHwFQVySvzfMkfNhRnOUT9MAGwuumsLDEazWR8V4-yOxh6nlhaahqwbQlgt3E2mCdNFsYrxl7Td4UdMgcrZ40FpF5vIIQ6dD-cElCwQB6Qc"
+    }
+  },
+  "proxy": "http://4f0276f3-7b3d-4f79-af0a-45acce8892c1:9H6xgrWxOQcdThVu01RPHlFieTjKSXKz@tun.testsprite.com:8080"
+}

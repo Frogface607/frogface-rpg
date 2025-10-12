@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FrogFace RPG - Твоя Жизнь Как Игра</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐉</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/stats.css">
+</head>
+<body class="bg-gray-50 text-gray-900 min-h-screen">
+    <!-- Main Game -->
+    <div id="mainGame">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b border-gray-200">
+            <div class="container mx-auto px-4 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                            <span class="text-2xl">🐸</span>
+                        </div>
+                        <div>
+                            <h1 class="text-2xl font-bold text-gray-900">FrogFace RPG</h1>
+                            <p class="text-gray-500 text-sm">Твоя жизнь как RPG-игра с AI</p>
+                        </div>
+                    </div>
+                <div class="flex items-center space-x-6">
+                    <!-- API Sync Status -->
+                    <div id="apiSyncStatus" class="flex items-center space-x-2 text-xs bg-gray-100 px-3 py-1 rounded-full">
+                        <div class="w-2 h-2 rounded-full bg-gray-400" id="syncIndicator"></div>
+                        <span class="text-gray-600" id="syncStatusText">Оффлайн</span>
+                    </div>
+
+                    <!-- Total Pot -->
+                    <div class="text-right">
+                        <div class="text-2xl font-bold text-gray-900" id="totalPot">0 ₽</div>
+                        <div class="text-sm text-gray-500">Накоплено</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dashboard -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Stats Dashboard -->
+        <div class="container mx-auto px-4 py-6">
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 mb-6">
+                <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                    <i class="fas fa-dashboard mr-2 text-indigo-600"></i>
+                    Панель прогресса
+                </h2>
+                
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
+                    <!-- Energy Stat -->
+                    <div class="bg-red-50 p-4 rounded-lg border border-red-100 cursor-pointer hover:bg-red-100 transition-colors" onclick="window.detoxRPG && window.detoxRPG.quickEnergyBoost()" title="Клик для +1 энергии">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-red-500 text-2xl">⚡</span>
+                            <span class="text-lg font-bold text-red-600" id="energyBadge">🔥</span>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-gray-700" id="energyStat">8</div>
+                            <div class="text-sm text-gray-500 mb-2">Energy</div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-red-500 h-2 rounded-full transition-all duration-300" id="energyProgress" style="width: 80%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mind Stat -->
+                    <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-blue-500 text-2xl">🧠</span>
+                            <span class="text-lg font-bold text-blue-600" id="mindBadge">📚</span>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-gray-700" id="mindStat">60</div>
+                            <div class="text-sm text-gray-500 mb-2">Mind</div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-blue-500 h-2 rounded-full transition-all duration-300" id="mindProgress" style="width: 60%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Power Stat -->
+                    <div class="bg-purple-50 p-4 rounded-lg border border-purple-100">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-purple-500 text-2xl">💪</span>
+                            <span class="text-lg font-bold text-purple-600" id="powerBadge">⚡</span>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-gray-700" id="powerStat">82</div>
+                            <div class="text-sm text-gray-500 mb-2">Power</div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-purple-500 h-2 rounded-full transition-all duration-300" id="powerProgress" style="width: 82%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Social Stat -->
+                    <div class="bg-green-50 p-4 rounded-lg border border-green-100">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-green-500 text-2xl">🤝</span>
+                            <span class="text-lg font-bold text-green-600" id="socialBadge">👥</span>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-gray-700" id="socialStat">58</div>
+                            <div class="text-sm text-gray-500 mb-2">Social</div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-green-500 h-2 rounded-full transition-all duration-300" id="socialProgress" style="width: 58%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pro Stat -->
+                    <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-100">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-yellow-500 text-2xl">🎯</span>
+                            <span class="text-lg font-bold text-yellow-600" id="proBadge">🎖️</span>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-gray-700" id="proStat">75</div>
+                            <div class="text-sm text-gray-500 mb-2">Pro</div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-yellow-500 h-2 rounded-full transition-all duration-300" id="proProgress" style="width: 75%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Metrics -->
+                <div class="grid grid-cols-3 gap-4 text-center">
+                    <div class="bg-gray-50 p-3 rounded-lg">
+                        <div class="text-lg font-bold text-gray-700" id="activeBoostCount">0/0</div>
+                        <div class="text-xs text-gray-500">Активные бусты</div>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded-lg">
+                        <div class="text-lg font-bold text-gray-700" id="currentDay">1</div>
+                        <div class="text-xs text-gray-500">Игровой день</div>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded-lg">
+                        <div class="text-lg font-bold text-gray-700" id="streakCount">0</div>
+                        <div class="text-xs text-gray-500">Текущий стрик</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Quest of the Day -->
+        <div class="bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl p-6 mb-8 text-white shadow-lg">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-2xl font-bold mb-2">
+                        <i class="fas fa-magic mr-2"></i>AI Квест дня
+                    </h2>
+                    <p class="text-purple-100 mb-4" id="dailyQuestText">Получите персональный квест от AI Game Master</p>
+                    <button 
+                        onclick="window.detoxRPG && window.detoxRPG.generateDailyQuest()"
+                        class="bg-white text-purple-600 px-6 py-3 rounded-lg font-bold hover:bg-purple-50 transition-colors" 
+                        id="questButton"
+                    >
+                        <i class="fas fa-sparkles mr-2"></i>Получить квест
+                    </button>
+                </div>
+                <div class="text-6xl opacity-20">
+                    ✨
+                </div>
+            </div>
+        </div>
+
+        <!-- Epic Quest of the Day -->
+        <div id="epicQuestCard" class="bg-gradient-to-br from-orange-500 via-red-500 to-pink-500 rounded-xl p-6 mb-8 text-white shadow-2xl border-2 border-yellow-400">
+            <div class="flex items-start justify-between">
+                <div class="flex-1">
+                    <div class="flex items-center space-x-2 mb-3">
+                        <h2 class="text-2xl font-bold">
+                            <i class="fas fa-crown mr-2"></i>EPIC КВЕСТ ДНЯ
+                        </h2>
+                        <div id="epicCategoryBadge" class="px-3 py-1 bg-white bg-opacity-20 rounded-full text-sm font-bold">
+                            🚀 Business
+                        </div>
+                    </div>
+                    
+                    <div id="epicQuestContent" class="mb-4">
+                        <p class="text-xl font-bold mb-2" id="epicQuestTitle">Выбери главную задачу дня</p>
+                        <p class="text-orange-100 text-sm" id="epicQuestDescription">
+                            Создай один важный квест - фокус всего дня. После выполнения получишь +150 XP и право на отдых!
+                        </p>
+                    </div>
+                    
+                    <div class="flex items-center space-x-3">
+                        <button 
+                            id="createEpicQuest"
+                            class="bg-white text-orange-600 px-6 py-3 rounded-lg font-bold hover:bg-orange-50 transition-colors shadow-lg"
+                        >
+                            <i class="fas fa-plus-circle mr-2"></i>Создать Epic Quest
+                        </button>
+                        <button 
+                            id="completeEpicQuest"
+                            class="hidden bg-green-500 text-white px-6 py-3 rounded-lg font-bold hover:bg-green-600 transition-colors shadow-lg"
+                        >
+                            <i class="fas fa-check-circle mr-2"></i>Выполнено!
+                        </button>
+                    </div>
+                    
+                    <!-- Epic Streak -->
+                    <div class="mt-4 flex items-center space-x-4 text-sm">
+                        <div class="bg-white bg-opacity-20 px-3 py-1 rounded-full">
+                            🔥 Epic Streak: <span id="epicStreakCount" class="font-bold">0</span> дней
+                        </div>
+                        <div class="bg-white bg-opacity-20 px-3 py-1 rounded-full">
+                            ⭐ Epic XP: <span class="font-bold">+150</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-7xl opacity-30 ml-4">
+                    👑
+                </div>
+            </div>
+        </div>
+
+        <!-- Projects Dashboard -->
+        <div class="bg-white rounded-xl p-6 mb-8 shadow-sm border border-gray-200">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-bold text-gray-900">
+                    <i class="fas fa-folder-open mr-2 text-indigo-600"></i>Мои проекты
+                </h2>
+                <div class="text-sm text-gray-500">
+                    Прогресс по активным направлениям
+                </div>
+            </div>
+
+            <!-- Projects Grid -->
+            <div id="projectsDashboard" class="space-y-4">
+                <!-- Projects will be populated by JavaScript -->
+            </div>
+
+            <!-- Overall Stats -->
+            <div class="mt-6 pt-6 border-t border-gray-200">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                    <div>
+                        <div class="text-2xl font-bold text-blue-600" id="totalTasksCompleted">0</div>
+                        <div class="text-xs text-gray-600">Задач выполнено</div>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold text-green-600" id="totalEarnings">0₽</div>
+                        <div class="text-xs text-gray-600">Всего заработано</div>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold text-purple-600" id="activeProjects">0</div>
+                        <div class="text-xs text-gray-600">Активных проектов</div>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold text-orange-600" id="weeklyProgress">0%</div>
+                        <div class="text-xs text-gray-600">Недельный прогресс</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Current Streak & Day Stats -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <!-- Current Day Card -->
+            <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-bold text-gray-900">
+                        <i class="fas fa-calendar-day mr-2 text-blue-500"></i>Игровой день <span id="currentDayOld">1</span>
+                    </h2>
+                    <div class="text-2xl" id="dayStatus">🎯</div>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Статус:</span>
+                        <span id="cleanStatus" class="font-bold text-green-600">Чистый день</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Сегодня заработано:</span>
+                        <span id="todayEarnings" class="font-bold text-blue-600">1000 ₽</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Streak Counter -->
+            <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-bold text-gray-900">
+                        <i class="fas fa-fire mr-2 text-orange-500"></i>Стрик
+                    </h2>
+                    <div class="text-3xl">🔥</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl font-bold text-orange-500 mb-2" id="streakCountOld">1</div>
+                    <div class="text-gray-600">дней подряд</div>
+                    <div class="mt-2">
+                        <span class="text-sm text-orange-600" id="streakBonus">Бонус: +0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Level & Progress -->
+            <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-bold text-gray-900">
+                        <i class="fas fa-star mr-2 text-purple-500"></i>Прогресс
+                    </h2>
+                    <div class="text-2xl">⭐</div>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Уровень:</span>
+                        <span class="font-bold text-purple-600" id="playerLevel">1</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">XP:</span>
+                        <span class="font-bold text-blue-600" id="playerXP">0</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Цель:</span>
+                        <span class="font-bold text-gray-900">10 дней</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-3">
+                        <div class="bg-gradient-to-r from-blue-500 to-purple-500 h-3 rounded-full transition-all duration-500" 
+                             id="progressBar" style="width: 10%"></div>
+                    </div>
+                    <div class="text-center text-sm text-gray-600" id="progressText">1/10 дней</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Today's Boosts -->
+        <div class="bg-gray-800 rounded-lg p-6 mb-8 border border-green-500 shadow-lg">
+            <h2 class="text-2xl font-bold text-green-400 mb-6">
+                <i class="fas fa-bolt mr-2"></i>Бусты на сегодня
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="boostsGrid">
+                <!-- Boosts will be populated by JavaScript -->
+            </div>
+            <div class="mt-6 p-4 bg-gray-700 rounded-lg">
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-300">Бусты за сегодня:</span>
+                    <span class="text-xl font-bold text-green-400" id="todayBoosts">0 ₽</span>
+                </div>
+                <div class="text-sm text-gray-400 mt-1">Максимум бустов в день: 1000 ₽</div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <button id="markCleanDay" class="bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-6 rounded-lg transition-colors shadow-lg">
+                <i class="fas fa-check mr-2"></i>Выполнить дневную цель
+            </button>
+            <button id="showPomodoroTimer" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 px-6 rounded-lg transition-colors shadow-lg">
+                <i class="fas fa-clock mr-2"></i>Фокус-таймер
+            </button>
+            <button id="reportRelapse" class="bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-6 rounded-lg transition-colors shadow-lg">
+                <i class="fas fa-times mr-2"></i>Зафиксировать неудачу
+            </button>
+            <button id="saveRecovery" class="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-4 px-6 rounded-lg transition-colors shadow-lg">
+                <i class="fas fa-heart mr-2"></i>Второй шанс
+            </button>
+        </div>
+
+        <!-- AI Coach Section -->
+        <div class="mb-8">
+            <button id="getAIAdviceBtn" class="w-full bg-gradient-to-r from-pink-500 to-violet-500 hover:from-pink-600 hover:to-violet-600 text-white font-bold py-4 px-6 rounded-lg transition-all shadow-lg transform hover:scale-[1.02] border border-pink-400">
+                <i class="fas fa-robot mr-3 text-lg"></i>
+                <span class="text-lg">🤖 Получить персональный AI-совет</span>
+                <div class="text-sm opacity-90 mt-1">Анализ прогресса и мотивация от ИИ-коуча</div>
+            </button>
+        </div>
+
+        <!-- Statistics Chart -->
+        <div class="bg-gray-800 rounded-lg p-6 mb-8 border border-indigo-500 shadow-lg">
+            <h2 class="text-2xl font-bold text-indigo-400 mb-6">
+                <i class="fas fa-chart-line mr-2"></i>Статистика
+            </h2>
+            <div style="height: 400px;">
+                <canvas id="progressChart"></canvas>
+            </div>
+        </div>
+
+        <!-- History Log -->
+        <div class="bg-gray-800 rounded-lg p-6 border border-purple-500 shadow-lg">
+            <h2 class="text-2xl font-bold text-purple-400 mb-6">
+                <i class="fas fa-history mr-2"></i>История дней
+            </h2>
+            <div class="space-y-3" id="historyLog">
+                <!-- History entries will be populated by JavaScript -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Rules Modal -->
+    <div id="rulesModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-gray-800 rounded-lg max-w-4xl w-full max-h-screen overflow-y-auto p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-yellow-400">Правила игры</h2>
+                <button id="closeRules" class="text-gray-400 hover:text-white text-2xl">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="prose prose-invert max-w-none" id="rulesContent">
+                <!-- Rules content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-gray-800 rounded-lg max-w-2xl w-full max-h-screen overflow-y-auto p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-indigo-400">
+                    <i class="fas fa-cog mr-2"></i>Настройки наград
+                </h2>
+                <button id="closeSettings" class="text-gray-400 hover:text-white text-2xl">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <!-- Challenge Type Selection -->
+            <div class="mb-8">
+                <h3 class="text-xl font-bold text-gray-300 mb-4">Тип челленджа</h3>
+                <select id="challengeTypeSelect" class="w-full bg-gray-700 border border-gray-600 text-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <option value="purity">🌱 Челлендж Чистоты - освобождение от вредных привычек</option>
+                    <option value="productivity" disabled>🚀 Челлендж Продуктивности (скоро)</option>
+                    <option value="health" disabled>💪 Челлендж Здоровья (скоро)</option>
+                    <option value="learning" disabled>📚 Челлендж Обучения (скоро)</option>
+                    <option value="financial" disabled>💰 Челлендж Финансов (скоро)</option>
+                    <option value="social" disabled>🤝 Челлендж Общения (скоро)</option>
+                </select>
+                <div class="text-xs text-gray-500 mt-2">
+                    Выберите фокус вашего личного развития
+                </div>
+            </div>
+
+            <!-- Projects Management -->
+            <div class="mb-8">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-bold text-gray-300">
+                        📁 Мои проекты
+                    </h3>
+                    <button id="addNewProject" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm">
+                        <i class="fas fa-plus mr-2"></i>Добавить
+                    </button>
+                </div>
+                <div class="text-sm text-gray-400 mb-4">
+                    Организуйте задачи по проектам. Все квесты будут автоматически привязываться к нужному проекту.
+                </div>
+                
+                <!-- Projects List -->
+                <div id="projectsList" class="space-y-2">
+                    <!-- Projects will be populated by JavaScript -->
+                </div>
+                
+                <!-- Add/Edit Project Form (initially hidden) -->
+                <div id="projectForm" class="hidden mt-4 p-4 bg-gray-700 rounded-lg border border-blue-500">
+                    <h4 class="font-bold text-blue-400 mb-4">
+                        <i class="fas fa-folder-plus mr-2"></i><span id="projectFormTitle">Создать проект</span>
+                    </h4>
+                    <div class="grid grid-cols-1 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Название проекта</label>
+                            <input type="text" id="projectName" placeholder="Например: Edison Bar" 
+                                   class="w-full bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 text-white">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Эмодзи</label>
+                                <input type="text" id="projectEmoji" placeholder="🍺" maxlength="2" 
+                                       class="w-full bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 text-white text-center text-2xl">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Цвет</label>
+                                <input type="color" id="projectColor" value="#F59E0B" 
+                                       class="w-full bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 h-10">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Описание (опционально)</label>
+                            <textarea id="projectDescription" rows="2" placeholder="Краткое описание проекта..." 
+                                      class="w-full bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 text-white"></textarea>
+                        </div>
+                    </div>
+                    <div class="flex justify-end space-x-3 mt-4">
+                        <button id="cancelProject" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg">
+                            Отмена
+                        </button>
+                        <button id="saveProject" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                            <i class="fas fa-save mr-2"></i>Сохранить
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Presets -->
+            <div class="mb-8">
+                <h3 class="text-xl font-bold text-gray-300 mb-4">Готовые пресеты</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <button class="preset-btn bg-gray-700 hover:bg-gray-600 p-4 rounded-lg border border-gray-600 transition-all" 
+                            data-preset="student">
+                        <div class="text-2xl mb-2">🥉</div>
+                        <div class="font-bold text-yellow-300">Студент</div>
+                        <div class="text-sm text-gray-400">200₽/день</div>
+                        <div class="text-xs text-gray-500 mt-1">Бусты до 200₽</div>
+                    </button>
+                    <button class="preset-btn bg-gray-700 hover:bg-gray-600 p-4 rounded-lg border border-gray-600 transition-all" 
+                            data-preset="middle">
+                        <div class="text-2xl mb-2">🥈</div>
+                        <div class="font-bold text-blue-300">Средний класс</div>
+                        <div class="text-sm text-gray-400">500₽/день</div>
+                        <div class="text-xs text-gray-500 mt-1">Бусты до 500₽</div>
+                    </button>
+                    <button class="preset-btn bg-gray-700 hover:bg-gray-600 p-4 rounded-lg border border-gray-600 transition-all" 
+                            data-preset="premium">
+                        <div class="text-2xl mb-2">🥇</div>
+                        <div class="font-bold text-purple-300">Премиум</div>
+                        <div class="text-sm text-gray-400">1000₽/день</div>
+                        <div class="text-xs text-gray-500 mt-1">Бусты до 1000₽</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Custom Settings -->
+            <div class="mb-8">
+                <h3 class="text-xl font-bold text-gray-300 mb-4">
+                    ⚙️ Кастомные настройки
+                </h3>
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">
+                            Базовая награда за чистый день
+                        </label>
+                        <div class="flex items-center space-x-4">
+                            <input type="range" id="baseDayReward" class="flex-1 slider" 
+                                   min="100" max="5000" step="50" value="1000">
+                            <div class="w-24 text-right">
+                                <span id="baseDayRewardValue" class="text-lg font-bold text-green-400">1000₽</span>
+                            </div>
+                        </div>
+                        <div class="text-xs text-gray-500 mt-1">Рекомендуем 1-3% от месячного дохода</div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">
+                            Максимум бустов в день
+                        </label>
+                        <div class="flex items-center space-x-4">
+                            <input type="range" id="maxDailyBoosts" class="flex-1 slider" 
+                                   min="100" max="2000" step="50" value="1000">
+                            <div class="w-24 text-right">
+                                <span id="maxDailyBoostsValue" class="text-lg font-bold text-yellow-400">1000₽</span>
+                            </div>
+                        </div>
+                        <div class="text-xs text-gray-500 mt-1">Обычно равно базовой награде</div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">
+                            Общий бюджет на челлендж (опционально)
+                        </label>
+                        <input type="number" id="totalBudget" 
+                               class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white"
+                               placeholder="например, 30000" min="0" step="1000">
+                        <div class="text-xs text-gray-500 mt-1">Оставьте пустым для неограниченного бюджета</div>
+                    </div>
+
+                    <div>
+                        <label class="flex items-center space-x-3 cursor-pointer">
+                            <input type="checkbox" id="scaleBoosts" class="boost-checkbox">
+                            <div class="flex-1">
+                                <div class="text-sm font-medium text-gray-300">
+                                    Масштабировать награды бустов
+                                </div>
+                                <div class="text-xs text-gray-500 mt-1">
+                                    Автоматически подстраивать размеры наград под вашу базовую сумму
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Goal Setting -->
+            <div class="mb-8">
+                <h3 class="text-xl font-bold text-gray-300 mb-4">
+                    🎯 Цель накопления
+                </h3>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">
+                            Выберите готовую цель или создайте свою
+                        </label>
+                        <select id="goalSelector" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white">
+                            <option value="">Без цели</option>
+                            <option value="custom">🎨 Создать свою цель</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Custom Goal Form -->
+                    <div id="customGoalForm" class="hidden space-y-4 p-4 bg-gray-700 rounded-lg border border-blue-500">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Название цели</label>
+                                <input type="text" id="customGoalName" placeholder="Например: Новый MacBook" 
+                                       class="w-full bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 text-white">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Сумма (₽)</label>
+                                <input type="number" id="customGoalTarget" placeholder="150000" min="1000" step="1000" 
+                                       class="w-full bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 text-white">
+                            </div>
+                        </div>
+                        <div class="flex justify-end space-x-3">
+                            <button id="cancelCustomGoal" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg">
+                                Отмена
+                            </button>
+                            <button id="saveCustomGoal" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                                <i class="fas fa-save mr-2"></i>Установить цель
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Current Goal Display -->
+                    <div id="currentGoalDisplay" class="hidden p-4 bg-blue-900 bg-opacity-30 rounded-lg border border-blue-500">
+                        <!-- Goal progress will be displayed here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Boosts Management -->
+            <div class="mb-8">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-bold text-gray-300">
+                        🚀 Управление бустами
+                    </h3>
+                    <button id="showBoostManager" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm">
+                        <i class="fas fa-edit mr-2"></i>Настроить
+                    </button>
+                </div>
+                <div class="text-gray-400 text-sm mb-2">
+                    Активных бустов: <span id="enabledBoostsCount" class="font-bold text-purple-400">13</span>
+                </div>
+                <div class="text-xs text-gray-500">
+                    Выберите активности, которые хотите отслеживать. Можете добавить свои кастомные бусты.
+                </div>
+            </div>
+
+            <!-- Calculation Preview -->
+            <div class="mb-8 p-4 bg-gray-700 rounded-lg border border-indigo-500">
+                <h4 class="font-bold text-indigo-300 mb-3">📊 Прогноз наград</h4>
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <span class="text-gray-400">За идеальный день:</span>
+                        <div class="font-bold text-green-400" id="perfectDayReward">2000₽</div>
+                    </div>
+                    <div>
+                        <span class="text-gray-400">За 10 дней (без стриков):</span>
+                        <div class="font-bold text-blue-400" id="tenDaysReward">20000₽</div>
+                    </div>
+                    <div>
+                        <span class="text-gray-400">Максимум за 10 дней:</span>
+                        <div class="font-bold text-purple-400" id="maxTenDaysReward">28000₽</div>
+                    </div>
+                    <div>
+                        <span class="text-gray-400">+ Достижения:</span>
+                        <div class="font-bold text-yellow-400">+13800₽</div>
+                    </div>
+                </div>
+                <div id="scalingInfo"></div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="space-y-4">
+                <div class="flex space-x-4">
+                    <button id="saveSettings" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg transition-colors">
+                        <i class="fas fa-save mr-2"></i>Сохранить настройки
+                    </button>
+                    <button id="resetSettings" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-4 rounded-lg transition-colors">
+                        <i class="fas fa-undo mr-2"></i>Сбросить
+                    </button>
+                </div>
+                
+                <!-- Backup & Restore -->
+                <div class="border-t border-gray-600 pt-4 mb-4">
+                    <h4 class="text-blue-400 font-bold mb-3">
+                        <i class="fas fa-database mr-2"></i>Резервное копирование
+                    </h4>
+                    <div class="text-sm text-gray-400 mb-3">
+                        Экспортируйте данные для резервной копии или переноса на другое устройство
+                    </div>
+                    <div class="space-y-3">
+                        <!-- Export -->
+                        <div class="bg-gray-700 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <div>
+                                    <div class="font-bold text-white">💾 Экспорт данных</div>
+                                    <div class="text-xs text-gray-400 mt-1">Скачать все данные в JSON файл</div>
+                                </div>
+                                <button id="exportData" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
+                                    <i class="fas fa-download mr-2"></i>Экспорт
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Import -->
+                        <div class="bg-gray-700 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <div>
+                                    <div class="font-bold text-white">📥 Импорт данных</div>
+                                    <div class="text-xs text-gray-400 mt-1">Загрузить данные из JSON файла</div>
+                                </div>
+                                <label for="importFile" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors cursor-pointer">
+                                    <i class="fas fa-upload mr-2"></i>Импорт
+                                </label>
+                                <input type="file" id="importFile" accept=".json" class="hidden">
+                            </div>
+                            <div class="text-xs text-yellow-400 mt-2">
+                                ⚠️ Импорт заменит все текущие данные!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Danger Zone -->
+                <div class="border-t border-gray-600 pt-4">
+                    <h4 class="text-red-400 font-bold mb-3">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>Опасная зона
+                    </h4>
+                    <div class="flex space-x-4">
+                        <button id="resetProgress" class="flex-1 bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-4 rounded-lg transition-colors">
+                            <i class="fas fa-refresh mr-2"></i>Новый челлендж
+                        </button>
+                        <button id="resetEverything" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-4 rounded-lg transition-colors">
+                            <i class="fas fa-trash mr-2"></i>Удалить всё
+                        </button>
+                    </div>
+                    <div class="text-xs text-gray-500 mt-2">
+                        <strong>Новый челлендж:</strong> сброс прогресса, настройки остаются<br>
+                        <strong>Удалить всё:</strong> полное удаление включая настройки
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Boost Manager Modal -->
+    <div id="boostManagerModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-60 flex items-center justify-center p-4">
+        <div class="bg-gray-800 rounded-lg max-w-6xl w-full max-h-screen overflow-y-auto p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-purple-400">
+                    <i class="fas fa-rocket mr-2"></i>Менеджер бустов
+                </h2>
+                <button id="closeBoostManager" class="text-gray-400 hover:text-white text-2xl">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <!-- Search and Filters -->
+            <div class="mb-6 flex flex-col md:flex-row gap-4">
+                <div class="flex-1">
+                    <input type="text" id="boostSearch" placeholder="Поиск бустов..." 
+                           class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white">
+                </div>
+                <div>
+                    <select id="categoryFilter" class="bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white">
+                        <option value="">Все категории</option>
+                    </select>
+                </div>
+                <div>
+                    <button id="addCustomBoost" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg">
+                        <i class="fas fa-plus mr-2"></i>Добавить свой
+                    </button>
+                </div>
+            </div>
+
+            <!-- Selected Count -->
+            <div class="mb-4 p-3 bg-gray-700 rounded-lg">
+                <div class="flex justify-between items-center text-sm">
+                    <span class="text-gray-400">Выбрано бустов:</span>
+                    <span id="selectedBoostsCount" class="font-bold text-purple-400">0</span>
+                </div>
+            </div>
+
+            <!-- Boosts Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6" id="boostLibraryGrid">
+                <!-- Boosts will be populated by JavaScript -->
+            </div>
+
+            <!-- Custom Boost Form (initially hidden) -->
+            <div id="customBoostForm" class="hidden mb-6 p-4 bg-gray-700 rounded-lg border border-green-500">
+                <h4 class="font-bold text-green-400 mb-4">
+                    <i class="fas fa-star mr-2"></i>Создать кастомный буст
+                </h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Название</label>
+                        <input type="text" id="customBoostName" placeholder="например: Медитация 15 мин" 
+                               class="w-full bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Награда (₽)</label>
+                        <input type="number" id="customBoostReward" placeholder="150" min="10" max="500" 
+                               class="w-full bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Эмодзи</label>
+                        <div class="relative">
+                            <input type="text" id="customBoostIcon" placeholder="🧘" maxlength="2" 
+                                   class="w-full bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 text-white text-center text-2xl pr-10" readonly>
+                            <button type="button" id="emojiSelector" class="absolute right-2 top-2 text-gray-400 hover:text-white">
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                        </div>
+                        <div id="emojiGrid" class="hidden mt-2 p-3 bg-gray-700 rounded-lg border border-gray-500 max-h-40 overflow-y-auto">
+                            <!-- Emoji grid will be populated by JavaScript -->
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Категория</label>
+                        <select id="customBoostCategory" class="w-full bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 text-white">
+                            <option>Здоровье</option>
+                            <option>Тело</option>
+                            <option>Питание</option>
+                            <option>Продуктивность</option>
+                            <option>Среда</option>
+                            <option>Отношения</option>
+                            <option>Духовность</option>
+                            <option>Финансы</option>
+                            <option>Творчество</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex justify-end space-x-3 mt-4">
+                    <button id="cancelCustomBoost" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg">
+                        Отмена
+                    </button>
+                    <button id="saveCustomBoost" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg">
+                        <i class="fas fa-save mr-2"></i>Сохранить
+                    </button>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex justify-between">
+                <div class="flex space-x-3">
+                    <button id="selectAllBoosts" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                        <i class="fas fa-check-double mr-2"></i>Выбрать все
+                    </button>
+                    <button id="clearAllBoosts" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg">
+                        <i class="fas fa-times mr-2"></i>Очистить
+                    </button>
+                </div>
+                <button id="saveBoostSelection" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg font-bold">
+                    <i class="fas fa-save mr-2"></i>Сохранить выбор
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pomodoro Timer Modal -->
+    <div id="pomodoroModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-[9999] flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-md w-full p-8 shadow-2xl">
+            <div class="text-center">
+                <!-- Header -->
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900">🍅 Фокус-таймер</h2>
+                    <button id="closePomodoroTimer" class="text-gray-400 hover:text-gray-600 text-2xl relative z-10 cursor-pointer">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <!-- Timer Display -->
+                <div class="mb-8">
+                    <div id="timerDisplay" class="text-6xl font-mono font-bold text-gray-900 mb-4">25:00</div>
+                    <div id="timerStatus" class="text-lg text-gray-600">Готов к фокус-сессии</div>
+                    <div id="sessionInfo" class="text-sm text-gray-500 mt-2">Помодоро 25 мин • Короткий перерыв 5 мин</div>
+                </div>
+
+                <!-- Controls -->
+                <div class="flex justify-center space-x-4 mb-6">
+                    <button id="startTimer" class="bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-lg font-bold transition-colors relative z-10 cursor-pointer">
+                        <i class="fas fa-play mr-2"></i>Старт
+                    </button>
+                    <button id="pauseTimer" class="hidden bg-yellow-500 hover:bg-yellow-600 text-white px-8 py-3 rounded-lg font-bold transition-colors relative z-10 cursor-pointer">
+                        <i class="fas fa-pause mr-2"></i>Пауза
+                    </button>
+                    <button id="resetTimer" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-bold transition-colors relative z-10 cursor-pointer">
+                        <i class="fas fa-redo mr-2"></i>Сброс
+                    </button>
+                </div>
+
+                <!-- Session Counter -->
+                <div class="flex justify-center items-center space-x-4 mb-6">
+                    <span class="text-gray-600">Сессий сегодня:</span>
+                    <span id="sessionCount" class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full font-bold">0</span>
+                </div>
+
+                <!-- Settings -->
+                <div class="border-t pt-4">
+                    <div class="grid grid-cols-3 gap-4 text-sm">
+                        <div>
+                            <label class="block text-gray-600 mb-1">Работа</label>
+                            <input id="workDuration" type="number" value="25" min="5" max="60" 
+                                   class="w-full text-center border border-gray-300 rounded px-2 py-1">
+                        </div>
+                        <div>
+                            <label class="block text-gray-600 mb-1">Перерыв</label>
+                            <input id="breakDuration" type="number" value="5" min="1" max="15" 
+                                   class="w-full text-center border border-gray-300 rounded px-2 py-1">
+                        </div>
+                        <div>
+                            <label class="block text-gray-600 mb-1">Звук</label>
+                            <input id="soundEnabled" type="checkbox" checked 
+                                   class="mt-2 scale-150">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Auto-boost info -->
+                <div class="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                    <div class="text-sm text-blue-800">
+                        <i class="fas fa-magic mr-2"></i>
+                        <strong>4 помодоро</strong> = автоматически засчитается буст <strong>"90-мин фокус-блок"</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Share Progress Modal -->
+    <div id="shareModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-[9999] flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-lg w-full p-6 shadow-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-900">
+                    <i class="fas fa-share mr-2"></i>Поделиться прогрессом
+                </h2>
+                <button id="closeShareModal" class="text-gray-400 hover:text-gray-600 text-2xl relative z-10 cursor-pointer">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <!-- Share Options -->
+            <div class="space-y-4 mb-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Что поделить?</label>
+                    <select id="shareType" class="w-full border border-gray-300 rounded-lg px-4 py-2">
+                        <option value="achievement">🏆 Последнее достижение</option>
+                        <option value="streak">🔥 Текущий стрик</option>
+                        <option value="goal">🎯 Прогресс к цели</option>
+                        <option value="daily">📊 Итоги дня</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Стиль карточки</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button class="share-template p-3 border border-gray-300 rounded-lg hover:border-blue-500 transition-colors" data-template="minimal">
+                            <div class="w-full h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded mb-2"></div>
+                            <div class="text-xs text-gray-600">Минимал</div>
+                        </button>
+                        <button class="share-template p-3 border border-gray-300 rounded-lg hover:border-blue-500 transition-colors" data-template="colorful">
+                            <div class="w-full h-16 bg-gradient-to-br from-purple-400 to-blue-500 rounded mb-2"></div>
+                            <div class="text-xs text-gray-600">Яркий</div>
+                        </button>
+                        <button class="share-template p-3 border border-gray-300 rounded-lg hover:border-blue-500 transition-colors" data-template="motivation">
+                            <div class="w-full h-16 bg-gradient-to-br from-green-400 to-teal-500 rounded mb-2"></div>
+                            <div class="text-xs text-gray-600">Мотивация</div>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-3">
+                    <input type="checkbox" id="hideMoney" class="scale-125">
+                    <label for="hideMoney" class="text-sm text-gray-700">Скрыть суммы денег</label>
+                </div>
+            </div>
+
+            <!-- Preview -->
+            <div class="mb-6">
+                <div class="text-sm text-gray-600 mb-2">Превью:</div>
+                <div id="sharePreview" class="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                    <!-- Preview will be generated here -->
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex space-x-4">
+                <button id="downloadShare" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors relative z-10 cursor-pointer">
+                    <i class="fas fa-download mr-2"></i>Скачать
+                </button>
+                <button id="copyShare" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition-colors relative z-10 cursor-pointer">
+                    <i class="fas fa-copy mr-2"></i>Копировать
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Action Buttons -->
+    <div class="fixed bottom-6 right-6 flex flex-col space-y-3 z-40">
+        <button id="showKnowledgeBase" class="bg-amber-600 hover:bg-amber-700 text-white p-4 rounded-full shadow-lg fab" title="База знаний">
+            <i class="fas fa-brain"></i>
+        </button>
+        <button id="showWeeklyReview" class="bg-orange-600 hover:bg-orange-700 text-white p-4 rounded-full shadow-lg fab" title="Недельный обзор">
+            <i class="fas fa-calendar-week"></i>
+        </button>
+        <button id="showShareModal" class="bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-lg fab">
+            <i class="fas fa-share"></i>
+        </button>
+        <button id="showSettings" class="bg-indigo-600 hover:bg-indigo-700 text-white p-4 rounded-full shadow-lg fab">
+            <i class="fas fa-cog"></i>
+        </button>
+        <button id="showRules" class="bg-purple-600 hover:bg-purple-700 text-white p-4 rounded-full shadow-lg fab">
+            <i class="fas fa-book"></i>
+        </button>
+        <button id="showTodoList" class="bg-emerald-600 hover:bg-emerald-700 text-white p-4 rounded-full shadow-lg fab">
+            <i class="fas fa-tasks"></i>
+        </button>
+        <button id="showAICoach" class="bg-gradient-to-r from-pink-500 to-violet-500 hover:from-pink-600 hover:to-violet-600 text-white p-4 rounded-full shadow-lg fab">
+            <i class="fas fa-robot"></i>
+        </button>
+    </div>
+
+    <!-- Todo List Modal -->
+    <div id="todoModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-[9999] flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-emerald-500 to-teal-500 text-white p-6">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-2xl font-bold flex items-center">
+                        <i class="fas fa-tasks mr-3"></i>Список задач
+                    </h2>
+                    <button id="closeTodoModal" class="text-white hover:text-gray-200 text-2xl relative z-10 cursor-pointer">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="mt-2 text-emerald-100">
+                    Планируй день • Получай награды • Достигай целей
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="p-6 max-h-[60vh] overflow-y-auto">
+                <!-- Add Task Form -->
+                <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                    <div class="flex space-x-3 mb-3">
+                        <input 
+                            type="text" 
+                            id="newTaskText" 
+                            placeholder="Что нужно сделать?" 
+                            class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                        >
+                        <button id="addTask" class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold transition-colors relative z-10 cursor-pointer">
+                            <i class="fas fa-plus mr-2"></i>Добавить
+                        </button>
+                    </div>
+                    <div class="flex space-x-3">
+                        <select id="taskProject" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 bg-white">
+                            <option value="">Без проекта</option>
+                            <!-- Projects will be populated by JavaScript -->
+                        </select>
+                        <select id="taskPriority" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 bg-white">
+                            <option value="low">🟢 Простая (10-50₽)</option>
+                            <option value="medium">🟡 Средняя (50-150₽)</option>
+                            <option value="high">🔴 Сложная (150-300₽)</option>
+                            <option value="epic">🟣 Эпик-квест (300-500₽)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Stats -->
+                <div class="grid grid-cols-3 gap-4 mb-6">
+                    <div class="bg-blue-50 rounded-lg p-3 text-center">
+                        <div class="text-2xl font-bold text-blue-600" id="todoStatsCompleted">0</div>
+                        <div class="text-sm text-blue-800">Выполнено</div>
+                    </div>
+                    <div class="bg-green-50 rounded-lg p-3 text-center">
+                        <div class="text-2xl font-bold text-green-600" id="todoStatsEarnings">0₽</div>
+                        <div class="text-sm text-green-800">Заработано</div>
+                    </div>
+                    <div class="bg-purple-50 rounded-lg p-3 text-center">
+                        <div class="text-2xl font-bold text-purple-600" id="todoStatsStreak">0</div>
+                        <div class="text-sm text-purple-800">Дней подряд</div>
+                    </div>
+                </div>
+
+                <!-- Project Filters -->
+                <div class="mb-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="text-sm font-medium text-gray-700">Фильтр по проекту:</div>
+                        <div class="text-xs text-gray-500" id="filteredTaskCount"></div>
+                    </div>
+                    <div id="projectFilters" class="flex flex-wrap gap-2">
+                        <!-- Filter buttons will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Tasks List -->
+                <div id="tasksList" class="space-y-3">
+                    <!-- Tasks will be dynamically added here -->
+                </div>
+
+                <!-- Empty State -->
+                <div id="emptyTodoState" class="text-center py-8 text-gray-500">
+                    <i class="fas fa-clipboard-list text-4xl mb-3 text-gray-300"></i>
+                    <div class="text-lg font-medium">Пока задач нет</div>
+                    <div class="text-sm">Добавь первую задачу и начни зарабатывать!</div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="bg-gray-50 px-6 py-4 flex justify-between items-center">
+                <div class="text-sm text-gray-600">
+                    💡 Совет: Выполняй все задачи за день и получи бонус +100₽
+                </div>
+                <button id="clearCompletedTasks" class="text-red-600 hover:text-red-800 font-medium relative z-10 cursor-pointer">
+                    Очистить выполненные
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Coach Modal -->
+    <div id="aiCoachModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-[9999] flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-md w-full shadow-2xl">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-pink-500 to-violet-500 text-white p-6 rounded-t-xl">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-xl font-bold flex items-center">
+                        <i class="fas fa-robot mr-3"></i>AI Коуч
+                    </h2>
+                    <button id="closeAICoach" class="text-white hover:text-gray-200 text-xl relative z-10 cursor-pointer">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="mt-2 text-pink-100 text-sm">
+                    Персональный совет на основе твоего прогресса
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="p-6">
+                <div id="aiAdviceContent" class="min-h-[100px] flex items-center justify-center">
+                    <div class="text-center text-gray-500">
+                        <div class="animate-spin w-8 h-8 border-4 border-pink-500 border-t-transparent rounded-full mx-auto mb-3"></div>
+                        <div>AI анализирует твой прогресс...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="bg-gray-50 px-6 py-4 rounded-b-xl flex space-x-3">
+                <button id="getNewAdvice" class="flex-1 bg-gradient-to-r from-pink-500 to-violet-500 hover:from-pink-600 hover:to-violet-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+                    <i class="fas fa-refresh mr-2"></i>Новый совет
+                </button>
+                <button id="closeAICoachBtn" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-bold py-2 px-4 rounded-lg transition-colors">
+                    Закрыть
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Epic Quest Creation Modal -->
+    <div id="epicQuestModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-[9999] flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-lg w-full shadow-2xl">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-orange-500 to-red-500 text-white p-6 rounded-t-xl">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-xl font-bold flex items-center">
+                        <i class="fas fa-crown mr-3"></i>Создать Epic Quest
+                    </h2>
+                    <button id="closeEpicQuest" class="text-white hover:text-gray-200 text-xl relative z-10 cursor-pointer">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="mt-2 text-orange-100 text-sm">
+                    Один важный квест на день - фокус всей продуктивности
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="p-6 space-y-4">
+                <!-- Epic Quest Title -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Название Epic Quest</label>
+                    <input 
+                        type="text" 
+                        id="epicQuestTitleInput" 
+                        placeholder="Например: Запустить премиальную систему 3% в Edison"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                    >
+                </div>
+
+                <!-- Category Selection -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Категория</label>
+                    <div id="epicCategoryButtons" class="grid grid-cols-2 gap-2">
+                        <!-- Categories will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Project Selection -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Проект (опционально)</label>
+                    <select id="epicQuestProject" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 bg-white">
+                        <option value="">Без проекта</option>
+                        <!-- Projects will be populated by JavaScript -->
+                    </select>
+                </div>
+
+                <!-- Epic Description -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Описание (опционально)</label>
+                    <textarea 
+                        id="epicQuestDescInput"
+                        rows="3"
+                        placeholder="Что конкретно нужно сделать? Какой результат?"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+                    ></textarea>
+                </div>
+
+                <!-- Info Box -->
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                    <div class="flex items-start space-x-2 text-sm text-blue-800">
+                        <i class="fas fa-info-circle mt-0.5"></i>
+                        <div>
+                            <strong>Epic Quest Philosophy:</strong> Один большой квест = фокус дня. 
+                            После выполнения получаешь +150 XP и право на отдых без вины!
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="bg-gray-50 px-6 py-4 rounded-b-xl flex space-x-3">
+                <button id="cancelEpicQuest" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-700 font-bold py-3 px-4 rounded-lg transition-colors">
+                    Отмена
+                </button>
+                <button id="saveEpicQuest" class="flex-1 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold py-3 px-4 rounded-lg transition-colors">
+                    <i class="fas fa-save mr-2"></i>Создать Quest
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Knowledge Base Modal -->
+    <div id="knowledgeBaseModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-[9999] flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-5xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-amber-500 to-yellow-500 text-white p-6">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-2xl font-bold flex items-center">
+                        <i class="fas fa-brain mr-3"></i>База знаний
+                    </h2>
+                    <button id="closeKnowledgeBase" class="text-white hover:text-gray-200 text-2xl relative z-10 cursor-pointer">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="mt-2 text-amber-100">
+                    Вся информация о проектах в одном месте
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="flex h-[calc(90vh-8rem)]">
+                <!-- Sidebar -->
+                <div class="w-1/3 bg-gray-50 border-r border-gray-200 overflow-y-auto p-4">
+                    <!-- Search -->
+                    <div class="mb-4">
+                        <input 
+                            type="text" 
+                            id="knowledgeSearch" 
+                            placeholder="🔍 Поиск по базе..."
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500"
+                        >
+                    </div>
+
+                    <!-- Filter by Project -->
+                    <div class="mb-4">
+                        <select id="knowledgeProjectFilter" class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white">
+                            <option value="">Все проекты</option>
+                            <!-- Projects will be populated by JavaScript -->
+                        </select>
+                    </div>
+
+                    <!-- Upload Buttons -->
+                    <div class="space-y-2 mb-4">
+                        <label for="uploadKnowledge" class="block">
+                            <div class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg text-center cursor-pointer transition-colors text-sm">
+                                <i class="fas fa-file mr-2"></i>Загрузить файлы
+                            </div>
+                            <input type="file" id="uploadKnowledge" accept=".md,.txt" multiple class="hidden">
+                        </label>
+                        
+                        <label for="uploadFolder" class="block">
+                            <div class="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white px-4 py-2 rounded-lg text-center cursor-pointer transition-colors text-sm font-bold">
+                                <i class="fas fa-folder mr-2"></i>Загрузить папку
+                            </div>
+                            <input type="file" id="uploadFolder" webkitdirectory directory multiple class="hidden">
+                        </label>
+                        
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-2 text-xs text-blue-800">
+                            <i class="fas fa-lightbulb mr-1"></i>
+                            <strong>Совет:</strong> Загрузите всю папку "База знаний" - структура сохранится!
+                        </div>
+                    </div>
+
+                    <!-- Documents List -->
+                    <div class="text-sm font-medium text-gray-700 mb-2">
+                        Документы (<span id="docsCount">0</span>)
+                    </div>
+                    <div id="documentsList" class="space-y-2">
+                        <!-- Documents will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Document Viewer -->
+                <div class="flex-1 p-6 overflow-y-auto">
+                    <div id="documentViewer" class="prose max-w-none">
+                        <div class="text-center text-gray-500 py-12">
+                            <i class="fas fa-file-alt text-5xl mb-4 text-gray-300"></i>
+                            <div class="text-lg font-medium">Выберите документ для просмотра</div>
+                            <div class="text-sm mt-2">или загрузите новый</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer with Stats -->
+            <div class="bg-gray-50 px-6 py-3 border-t border-gray-200 flex justify-between items-center text-sm text-gray-600">
+                <div>
+                    📚 Всего документов: <span id="totalDocs" class="font-bold">0</span>
+                </div>
+                <div>
+                    💾 Размер базы: <span id="kbSize" class="font-bold">0 KB</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Weekly Review Modal -->
+    <div id="weeklyReviewModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-[9999] flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-orange-500 to-red-500 text-white p-6">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-2xl font-bold flex items-center">
+                        <i class="fas fa-calendar-week mr-3"></i>Недельный обзор
+                    </h2>
+                    <button id="closeWeeklyReview" class="text-white hover:text-gray-200 text-2xl relative z-10 cursor-pointer">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="mt-2 text-orange-100" id="weeklyPeriod">
+                    За последние 7 дней
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="p-6">
+                <!-- Overall Stats -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 text-center">
+                        <div class="text-3xl font-bold text-blue-600" id="weeklyTotalTasks">0</div>
+                        <div class="text-sm text-blue-800">Задач выполнено</div>
+                    </div>
+                    <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4 text-center">
+                        <div class="text-3xl font-bold text-green-600" id="weeklyTotalEarned">0₽</div>
+                        <div class="text-sm text-green-800">Заработано</div>
+                    </div>
+                    <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-4 text-center">
+                        <div class="text-3xl font-bold text-purple-600" id="weeklyStreak">0</div>
+                        <div class="text-sm text-purple-800">Дней стрик</div>
+                    </div>
+                    <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-4 text-center">
+                        <div class="text-3xl font-bold text-orange-600" id="weeklyLevel">1</div>
+                        <div class="text-sm text-orange-800">Уровень</div>
+                    </div>
+                </div>
+
+                <!-- Epic Quests History -->
+                <div class="mb-6">
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">👑 Epic Quests недели</h3>
+                    <div id="weeklyEpicQuests" class="space-y-2">
+                        <!-- Epic Quests will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Projects Progress -->
+                <div class="mb-6">
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">📊 Прогресс по проектам</h3>
+                    <div id="weeklyProjectsProgress" class="space-y-3">
+                        <!-- Projects will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Top Achievement -->
+                <div class="mb-6">
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">🏆 Топ достижение недели</h3>
+                    <div id="weeklyTopAchievement" class="bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-300 rounded-xl p-4">
+                        <!-- Top achievement will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Motivation Message -->
+                <div class="mb-6">
+                    <div class="bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-200 rounded-xl p-4">
+                        <div class="flex items-start space-x-3">
+                            <div class="text-3xl">💪</div>
+                            <div>
+                                <div class="font-bold text-purple-900 mb-1">Мотивация</div>
+                                <div id="weeklyMotivation" class="text-gray-700">
+                                    <!-- Motivation message will be populated by JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="bg-gray-50 px-6 py-4 rounded-b-xl flex justify-end">
+                <button id="closeWeeklyReviewBtn" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-bold py-2 px-6 rounded-lg transition-colors">
+                    Закрыть
+                </button>
+            </div>
+        </div>
+    </div>
+    </div> <!-- End mainGame -->
+
+    <script src="js/app.js"></script>
+</body>
+</html>

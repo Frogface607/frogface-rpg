@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 FrogFace Connection Test</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        h1 { text-align: center; margin-bottom: 30px; }
+        .test-item {
+            background: rgba(255,255,255,0.1);
+            margin: 15px 0;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #4CAF50;
+        }
+        .status {
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin-left: 10px;
+        }
+        .success { background: #4CAF50; }
+        .error { background: #f44336; }
+        .pending { background: #ff9800; }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover { background: #45a049; }
+        .log {
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 FrogFace Connection Test</h1>
+        
+        <div class="test-item">
+            <strong>1. HTTP Server (Port 3000)</strong>
+            <span class="status pending" id="http-status">Проверяем...</span>
+        </div>
+        
+        <div class="test-item">
+            <strong>2. API Server (Port 3001)</strong>
+            <span class="status pending" id="api-status">Проверяем...</span>
+        </div>
+        
+        <div class="test-item">
+            <strong>3. FrogFace App Sync</strong>
+            <span class="status pending" id="sync-status">Проверяем...</span>
+        </div>
+        
+        <div style="text-align: center; margin: 30px 0;">
+            <button onclick="runAllTests()">🔄 Запустить все тесты</button>
+            <button onclick="openApp()">🎮 Открыть FrogFace</button>
+        </div>
+        
+        <div class="log" id="log"></div>
+    </div>
+
+    <script>
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            const color = type === 'error' ? '#f44336' : type === 'success' ? '#4CAF50' : '#2196F3';
+            logDiv.innerHTML += `<div style="color: ${color}">[${timestamp}] ${message}</div>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+        
+        function updateStatus(id, status, text) {
+            const element = document.getElementById(id);
+            element.className = `status ${status}`;
+            element.textContent = text;
+        }
+        
+        async function testHTTPServer() {
+            try {
+                log('🌐 Тестирую HTTP сервер (localhost:3000)...');
+                const response = await fetch('http://localhost:3000/', { 
+                    method: 'HEAD',
+                    mode: 'no-cors' // Для обхода CORS
+                });
+                updateStatus('http-status', 'success', '✅ Работает');
+                log('✅ HTTP сервер доступен');
+                return true;
+            } catch (error) {
+                updateStatus('http-status', 'error', '❌ Не работает');
+                log(`❌ HTTP сервер недоступен: ${error.message}`, 'error');
+                return false;
+            }
+        }
+        
+        async function testAPIServer() {
+            try {
+                log('📡 Тестирую API сервер (localhost:3001)...');
+                const response = await fetch('http://localhost:3001/api/sync');
+                if (response.ok) {
+                    const data = await response.json();
+                    updateStatus('api-status', 'success', '✅ Работает');
+                    log(`✅ API сервер работает, получено данных: ${JSON.stringify(data).length} байт`);
+                    return true;
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                updateStatus('api-status', 'error', '❌ Не работает');
+                log(`❌ API сервер недоступен: ${error.message}`, 'error');
+                return false;
+            }
+        }
+        
+        async function testAppSync() {
+            try {
+                log('🔄 Тестирую синхронизацию приложения...');
+                
+                // Создаем тестовый запрос
+                const testData = {
+                    todoState: {
+                        tasks: [{
+                            id: 'test-' + Date.now(),
+                            text: 'Тестовая задача',
+                            priority: 'medium',
+                            projectId: 'frogface',
+                            completed: false,
+                            createdAt: new Date().toISOString()
+                        }]
+                    }
+                };
+                
+                const response = await fetch('http://localhost:3001/api/sync', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(testData)
+                });
+                
+                if (response.ok) {
+                    updateStatus('sync-status', 'success', '✅ Работает');
+                    log('✅ Синхронизация работает');
+                    return true;
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                updateStatus('sync-status', 'error', '❌ Не работает');
+                log(`❌ Синхронизация недоступна: ${error.message}`, 'error');
+                return false;
+            }
+        }
+        
+        async function runAllTests() {
+            log('🚀 Запускаю полный тест подключения...', 'info');
+            document.getElementById('log').innerHTML = '';
+            
+            const httpOk = await testHTTPServer();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            const apiOk = await testAPIServer();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            const syncOk = await testAppSync();
+            
+            log('', 'info');
+            if (httpOk && apiOk && syncOk) {
+                log('🎉 ВСЁ РАБОТАЕТ! Можешь использовать ChatGPT Voice!', 'success');
+            } else {
+                log('⚠️ Есть проблемы. Проверь что серверы запущены.', 'error');
+                log('💡 Запусти START_ALL.bat или вручную:', 'info');
+                log('   1. cd mcp-server && npm run api', 'info');
+                log('   2. node simple-http-server.js', 'info');
+                log('   3. Открой http://localhost:3000', 'info');
+            }
+        }
+        
+        function openApp() {
+            window.open('http://localhost:3000', '_blank');
+        }
+        
+        // Автозапуск тестов
+        window.onload = function() {
+            setTimeout(runAllTests, 1000);
+        };
+    </script>
+</body>
+</html>
+
