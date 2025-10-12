@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
 class DetoxRPG {
     constructor() {
         // API sync settings
-        this.apiURL = 'http://localhost:3001/api';
+        this.apiURL = 'https://frogface-rpg.vercel.app/api';
         this.syncInterval = null;
         this.lastSyncTime = null;
         
