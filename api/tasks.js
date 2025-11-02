@@ -3,6 +3,8 @@
  * Создает новые задачи от ChatGPT
  */
 
+import { addTask, getAllTasks } from './storage.js';
+
 export default async function handler(req, res) {
     // CORS headers
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -11,6 +13,17 @@ export default async function handler(req, res) {
     
     if (req.method === 'OPTIONS') {
         return res.status(200).end();
+    }
+
+    if (req.method === 'GET') {
+        // Получить все задачи
+        try {
+            const tasks = getAllTasks();
+            return res.json({ success: true, tasks });
+        } catch (error) {
+            console.error('❌ Ошибка получения задач:', error);
+            return res.status(500).json({ error: 'Internal server error' });
+        }
     }
 
     if (req.method !== 'POST') {
@@ -37,12 +50,13 @@ export default async function handler(req, res) {
             reward: calculateReward(priority)
         };
 
-        console.log('✅ Создана задача:', task);
+        // ✅ Сохраняем задачу в хранилище!
+        const savedTask = addTask(task);
         
-        // TODO: Сохранить в базу данных (Vercel KV или Postgres)
-        // Пока просто возвращаем созданную задачу
+        console.log('✅ Создана и сохранена задача:', savedTask);
+        console.log('📊 Всего задач в хранилище:', getAllTasks().length);
         
-        res.json({ success: true, task });
+        res.json({ success: true, task: savedTask });
     } catch (error) {
         console.error('❌ Ошибка создания задачи:', error);
         res.status(500).json({ error: 'Internal server error' });

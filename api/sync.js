@@ -3,6 +3,8 @@
  * Возвращает текущее состояние игры для синхронизации с фронтендом
  */
 
+import { getAllTasks } from './storage.js';
+
 export default async function handler(req, res) {
     // CORS headers
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -18,7 +20,9 @@ export default async function handler(req, res) {
     }
 
     try {
-        // Пока используем mock данные, потом подключим базу данных
+        // ✅ Получаем задачи из хранилища!
+        const allTasks = getAllTasks();
+        
         const gameState = {
             gameState: {
                 currentDay: 1,
@@ -38,12 +42,12 @@ export default async function handler(req, res) {
                 epicQuestHistory: []
             },
             todoState: {
-                tasks: []
+                tasks: allTasks  // ✅ Возвращаем реальные задачи!
             },
             projects: []
         };
 
-        console.log('📡 Sync endpoint called');
+        console.log('📡 Sync endpoint called, возвращаем', allTasks.length, 'задач');
         res.json(gameState);
     } catch (error) {
         console.error('❌ Sync error:', error);
