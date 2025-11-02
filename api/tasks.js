@@ -1,9 +1,10 @@
 /**
  * Vercel Function: Tasks endpoint
  * Создает новые задачи от ChatGPT
+ * Сохраняет в Supabase
  */
 
-import { addTask, getAllTasks } from './storage.js';
+import { addTask, getAllTasks } from './storage-supabase.js';
 
 export default async function handler(req, res) {
     // CORS headers
@@ -16,9 +17,9 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'GET') {
-        // Получить все задачи
+        // Получить все задачи из Supabase
         try {
-            const tasks = getAllTasks();
+            const tasks = await getAllTasks();
             return res.json({ success: true, tasks });
         } catch (error) {
             console.error('❌ Ошибка получения задач:', error);
@@ -50,13 +51,26 @@ export default async function handler(req, res) {
             reward: calculateReward(priority)
         };
 
-        // ✅ Сохраняем задачу в хранилище!
-        const savedTask = addTask(task);
+        // ✅ Сохраняем задачу в Supabase!
+        const savedTask = await addTask(task);
         
-        console.log('✅ Создана и сохранена задача:', savedTask);
-        console.log('📊 Всего задач в хранилище:', getAllTasks().length);
+        console.log('✅ Создана и сохранена задача в Supabase:', savedTask);
         
-        res.json({ success: true, task: savedTask });
+        // Форматируем ответ для совместимости
+        const formattedTask = {
+            id: savedTask.id,
+            text: savedTask.text,
+            priority: savedTask.priority,
+            projectId: savedTask.project_id,
+            completed: savedTask.completed,
+            reward: savedTask.reward,
+            createdAt: savedTask.created_at,
+            source: savedTask.source,
+            source_id: savedTask.source_id,
+            source_url: savedTask.source_url
+        };
+        
+        res.json({ success: true, task: formattedTask });
     } catch (error) {
         console.error('❌ Ошибка создания задачи:', error);
         res.status(500).json({ error: 'Internal server error' });

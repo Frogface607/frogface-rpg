@@ -4,9 +4,9 @@
  */
 
 // Supabase конфигурация (из переменных окружения Vercel)
-const SUPABASE_URL = process.env.SUPABASE_URL || '';
-const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || ''; // Service role для серверных запросов
 const SUPABASE_PROJECT_REF = process.env.SUPABASE_PROJECT_REF || 'ydpcfolffvatbweiuekn'; // FROGFACE STUDIO
+const SUPABASE_URL = process.env.SUPABASE_URL || `https://${SUPABASE_PROJECT_REF}.supabase.co`;
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || ''; // Service role для серверных запросов
 
 /**
  * Выполнить запрос к Supabase
