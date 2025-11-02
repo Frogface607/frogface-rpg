@@ -3,7 +3,7 @@
 
 class FrogFaceBridge {
     constructor() {
-        this.apiURL = 'http://localhost:3001/api'; // API сервер для синхронизации
+        this.apiURL = 'https://frogface-rpg.vercel.app/api'; // API сервер для синхронизации
     }
 
     // Получение текущего состояния игры

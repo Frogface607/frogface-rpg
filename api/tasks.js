@@ -59,3 +59,4 @@ function calculateReward(priority) {
     return rewards[priority] || rewards.medium;
 }
 
+

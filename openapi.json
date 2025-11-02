@@ -1,0 +1,310 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "FrogFace RPG API",
+    "version": "1.0.0",
+    "description": "API для управления задачами, базой знаний и статистикой в FrogFace RPG - геймифицированной системе продуктивности"
+  },
+  "servers": [
+    {
+      "url": "https://frogface-rpg.vercel.app/api",
+      "description": "Production API на Vercel"
+    }
+  ],
+  "paths": {
+    "/tasks": {
+      "post": {
+        "summary": "Создать новую задачу/квест",
+        "description": "Создает новую задачу в FrogFace RPG с автоматическим расчетом награды на основе приоритета",
+        "operationId": "createTask",
+        "tags": ["Tasks"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "description": "Название задачи/квеста",
+                    "example": "Протестировать интеграцию с Rube"
+                  },
+                  "priority": {
+                    "type": "string",
+                    "enum": ["low", "medium", "high", "epic"],
+                    "default": "medium",
+                    "description": "Приоритет задачи. Влияет на размер награды: low (10-50₽), medium (50-150₽), high (150-350₽), epic (500-1000₽)"
+                  },
+                  "projectId": {
+                    "type": "string",
+                    "enum": ["edison", "receptor", "frogface", "personal"],
+                    "default": "personal",
+                    "description": "ID проекта: edison (Edison Bar), receptor (Receptor SaaS), frogface (FrogFace RPG), personal (Личное)"
+                  }
+                },
+                "required": ["title"]
+              },
+              "example": {
+                "title": "Протестировать интеграцию с Rube",
+                "priority": "high",
+                "projectId": "frogface"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Задача успешно создана",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "task": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "task-1760210000667-l8z0a9j40"
+                        },
+                        "text": {
+                          "type": "string",
+                          "example": "Протестировать интеграцию с Rube"
+                        },
+                        "priority": {
+                          "type": "string",
+                          "example": "high"
+                        },
+                        "projectId": {
+                          "type": "string",
+                          "example": "frogface"
+                        },
+                        "completed": {
+                          "type": "boolean",
+                          "example": false
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "reward": {
+                          "type": "integer",
+                          "example": 250,
+                          "description": "Награда за выполнение задачи в рублях"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Неверный запрос (например, отсутствует title)"
+          },
+          "500": {
+            "description": "Внутренняя ошибка сервера"
+          }
+        }
+      }
+    },
+    "/knowledge": {
+      "post": {
+        "summary": "Создать документ в базе знаний",
+        "description": "Добавляет новый документ в базу знаний FrogFace RPG",
+        "operationId": "createKnowledgeDocument",
+        "tags": ["Knowledge"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "description": "Название документа",
+                    "example": "Интеграция с Rube"
+                  },
+                  "content": {
+                    "type": "string",
+                    "description": "Содержимое документа (поддерживает Markdown)",
+                    "example": "# Интеграция с Rube\n\nИнструкция по подключению..."
+                  },
+                  "project": {
+                    "type": "string",
+                    "enum": ["edison", "receptor", "frogface", "personal"],
+                    "default": "general",
+                    "description": "Проект, к которому относится документ"
+                  },
+                  "folderPath": {
+                    "type": "string",
+                    "default": "/",
+                    "description": "Путь к папке в структуре базы знаний",
+                    "example": "/docs/integrations"
+                  }
+                },
+                "required": ["title", "content"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Документ успешно создан",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "document": {
+                      "type": "object",
+                      "properties": {
+                        "id": { "type": "string" },
+                        "title": { "type": "string" },
+                        "content": { "type": "string" },
+                        "project": { "type": "string" },
+                        "folderPath": { "type": "string" },
+                        "createdAt": { "type": "string", "format": "date-time" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Получить документы из базы знаний",
+        "description": "Получает список документов с возможностью фильтрации по проекту и поиску",
+        "operationId": "getKnowledgeDocuments",
+        "tags": ["Knowledge"],
+        "parameters": [
+          {
+            "name": "project",
+            "in": "query",
+            "description": "Фильтр по проекту (edison, receptor, frogface, personal)",
+            "schema": {
+              "type": "string",
+              "enum": ["edison", "receptor", "frogface", "personal"]
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Поисковый запрос для поиска в названии и содержимом документов",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Список документов",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "documents": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": { "type": "string" },
+                          "title": { "type": "string" },
+                          "content": { "type": "string" },
+                          "project": { "type": "string" },
+                          "folderPath": { "type": "string" },
+                          "createdAt": { "type": "string" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sync": {
+      "get": {
+        "summary": "Получить текущее состояние игры",
+        "description": "Возвращает полное состояние игры для синхронизации фронтенда: задачи, статистику, базу знаний, эпик квесты",
+        "operationId": "getGameState",
+        "tags": ["Sync"],
+        "responses": {
+          "200": {
+            "description": "Состояние игры",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "gameState": {
+                      "type": "object",
+                      "properties": {
+                        "currentDay": { "type": "integer" },
+                        "totalPot": { "type": "integer" },
+                        "streak": { "type": "integer" },
+                        "level": { "type": "integer" },
+                        "totalXP": { "type": "integer" },
+                        "stats": {
+                          "type": "object",
+                          "properties": {
+                            "energy": { "type": "integer" },
+                            "mind": { "type": "integer" },
+                            "power": { "type": "integer" },
+                            "social": { "type": "integer" },
+                            "pro": { "type": "integer" }
+                          }
+                        },
+                        "knowledgeBase": { "type": "array" },
+                        "currentEpicQuest": { "type": "object", "nullable": true },
+                        "epicQuestHistory": { "type": "array" }
+                      }
+                    },
+                    "todoState": {
+                      "type": "object",
+                      "properties": {
+                        "tasks": {
+                          "type": "array",
+                          "items": { "type": "object" }
+                        }
+                      }
+                    },
+                    "projects": { "type": "array" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Tasks",
+      "description": "Операции с задачами и квестами"
+    },
+    {
+      "name": "Knowledge",
+      "description": "Работа с базой знаний"
+    },
+    {
+      "name": "Sync",
+      "description": "Синхронизация состояния игры"
+    }
+  ]
+}
+

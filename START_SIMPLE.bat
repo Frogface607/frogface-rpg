@@ -25,3 +25,4 @@ echo 🎤 ChatGPT Voice готов!
 echo.
 pause
 
+
