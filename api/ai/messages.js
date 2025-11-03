@@ -60,10 +60,19 @@ export default async function handler(req, res) {
             });
             
             console.log(`📨 New AI message: ${from_agent} → ${to_agent}: ${content.substring(0, 50)}...`);
+            console.log('📨 Created message:', JSON.stringify(message, null, 2));
+            
+            if (!message) {
+                return res.status(500).json({
+                    error: 'Failed to create message',
+                    details: 'createMessage returned null or undefined'
+                });
+            }
             
             return res.json({
                 success: true,
-                message: message
+                message: message,
+                count: 1
             });
         }
 
