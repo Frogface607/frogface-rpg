@@ -11,8 +11,8 @@ export default async function handler(req, res) {
   // GET - Fetch messages
   if (req.method === 'GET') {
     const { agent, status, limit = 50 } = req.query;
-    
-    let url = `${SUPABASE_-URL}/rest/v1/ai_messages?order=created_at.desc&limit=${limit}`;
+
+    let url = `${SUPABASE_URL}/rest/v1/ai_messages?order=created_at.desc&limit=${limit}`;
     if (agent) url += `&to_agent=eq.${agent}`;
     if (status) url += `&status=eq.${status}`;
 
@@ -62,13 +62,13 @@ export default async function handler(req, res) {
   if (req.method === 'PATCH') {
     const { message_id, status } = req.body;
 
-    const response = await fetch(
+    const response = await fetch
       `${SUPABASE_URL}/rest/v1/ai_messages?message_id=eq.${message_id}`,
       {
         method: 'PATCH',
         headers: {
           'apikey': SUPABASE_KEY,
-          'Authorization': `Beater ${SUPABASE_KEY}`,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
           'Content-Type': 'application/json',
           'Prefer': 'return=representation',
         },
