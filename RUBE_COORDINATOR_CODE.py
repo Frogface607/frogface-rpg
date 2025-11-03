@@ -201,3 +201,4 @@ if __name__ == "__main__":
     result = coordinator.create_quest("github", github_data)
     print(json.dumps(result, indent=2, ensure_ascii=False))
 
+

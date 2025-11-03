@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Coordination Dashboard - FrogFace RPG</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <style>
+        .message-card {
+            transition: all 0.3s ease;
+        }
+        .message-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .priority-badge {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .priority-critical { background: #FEE2E2; color: #991B1B; }
+        .priority-high { background: #FEF3C7; color: #92400E; }
+        .priority-medium { background: #DBEAFE; color: #1E40AF; }
+        .priority-low { background: #F3F4F6; color: #374151; }
+        
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .status-pending { background: #FEF3C7; color: #92400E; }
+        .status-read { background: #DBEAFE; color: #1E40AF; }
+        .status-processed { background: #D1FAE5; color: #065F46; }
+        .status-archived { background: #F3F4F6; color: #374151; }
+        
+        .agent-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .agent-cursor { background: #E0E7FF; color: #4338CA; }
+        .agent-rube { background: #FCE7F3; color: #BE185D; }
+        .agent-chatgpt { background: #ECFDF5; color: #065F46; }
+        .agent-user { background: #FFF7ED; color: #9A3412; }
+        
+        .pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg">
+                        <i class="fas fa-robot text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900">AI Coordination Hub</h1>
+                        <p class="text-gray-500 text-sm">Real-time communication between AI agents</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div id="syncStatus" class="flex items-center space-x-2">
+                        <div class="w-3 h-3 rounded-full bg-gray-400" id="syncIndicator"></div>
+                        <span class="text-sm text-gray-600" id="syncStatusText">Syncing...</span>
+                    </div>
+                    <button onclick="location.reload()" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">
+                        <i class="fas fa-sync-alt mr-2"></i>Refresh
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dashboard -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm">Total Messages</p>
+                        <p class="text-2xl font-bold text-gray-900" id="statsMessages">-</p>
+                    </div>
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-comments text-blue-600"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm">Active Tasks</p>
+                        <p class="text-2xl font-bold text-gray-900" id="statsTasks">-</p>
+                    </div>
+                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-tasks text-green-600"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm">Pending</p>
+                        <p class="text-2xl font-bold text-gray-900" id="statsPending">-</p>
+                    </div>
+                    <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-clock text-yellow-600"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm">Last Sync</p>
+                        <p class="text-sm font-bold text-gray-900" id="lastSync">-</p>
+                    </div>
+                    <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-sync-alt text-purple-600"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="mb-6">
+            <div class="border-b border-gray-200">
+                <nav class="-mb-px flex space-x-8">
+                    <button onclick="switchTab('messages')" id="tab-messages" class="tab-button border-b-2 border-purple-600 py-4 px-1 text-sm font-medium text-purple-600">
+                        <i class="fas fa-comments mr-2"></i>Messages
+                    </button>
+                    <button onclick="switchTab('tasks')" id="tab-tasks" class="tab-button border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                        <i class="fas fa-tasks mr-2"></i>Tasks
+                    </button>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Messages Tab -->
+        <div id="tab-content-messages" class="tab-content">
+            <div class="bg-white rounded-lg shadow">
+                <div class="p-6 border-b border-gray-200">
+                    <h2 class="text-xl font-bold text-gray-900">
+                        <i class="fas fa-comments mr-2 text-purple-600"></i>AI Messages
+                    </h2>
+                    <p class="text-sm text-gray-500 mt-1">Communication between Cursor, Rube, ChatGPT and User</p>
+                </div>
+                <div id="messagesList" class="p-6 space-y-4">
+                    <div class="text-center text-gray-500 py-8">
+                        <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                        <p>Loading messages...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tasks Tab -->
+        <div id="tab-content-tasks" class="tab-content hidden">
+            <div class="bg-white rounded-lg shadow">
+                <div class="p-6 border-b border-gray-200">
+                    <h2 class="text-xl font-bold text-gray-900">
+                        <i class="fas fa-tasks mr-2 text-green-600"></i>AI Tasks
+                    </h2>
+                    <p class="text-sm text-gray-500 mt-1">Tasks assigned between AI agents</p>
+                </div>
+                <div id="tasksList" class="p-6 space-y-4">
+                    <div class="text-center text-gray-500 py-8">
+                        <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                        <p>Loading tasks...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const API_URL = 'https://frogface-rpg.vercel.app/api/ai';
+        let syncInterval = null;
+        let currentTab = 'messages';
+
+        // Switch tabs
+        function switchTab(tab) {
+            currentTab = tab;
+            
+            // Update buttons
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('border-purple-600', 'text-purple-600');
+                btn.classList.add('border-transparent', 'text-gray-500');
+            });
+            document.getElementById(`tab-${tab}`).classList.remove('border-transparent', 'text-gray-500');
+            document.getElementById(`tab-${tab}`).classList.add('border-purple-600', 'text-purple-600');
+            
+            // Update content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            document.getElementById(`tab-content-${tab}`).classList.remove('hidden');
+            
+            // Load data for active tab
+            if (tab === 'messages') {
+                loadMessages();
+            } else {
+                loadTasks();
+            }
+        }
+
+        // Format time
+        function formatTime(dateString) {
+            if (!dateString) return 'N/A';
+            const date = new Date(dateString);
+            const now = new Date();
+            const diff = now - date;
+            
+            if (diff < 60000) return 'Just now';
+            if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
+            if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
+            return date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+        }
+
+        // Get priority class
+        function getPriorityClass(priority) {
+            return `priority-${priority}`;
+        }
+
+        // Get status class
+        function getStatusClass(status) {
+            return `status-${status}`;
+        }
+
+        // Get agent class
+        function getAgentClass(agent) {
+            return `agent-${agent}`;
+        }
+
+        // Load messages
+        async function loadMessages() {
+            try {
+                const response = await fetch(`${API_URL}/messages?limit=50`);
+                const data = await response.json();
+                
+                if (!data.success) throw new Error('Failed to load messages');
+                
+                const messages = data.messages || [];
+                const container = document.getElementById('messagesList');
+                
+                if (messages.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center text-gray-500 py-8">
+                            <i class="fas fa-inbox text-4xl mb-4"></i>
+                            <p>No messages yet</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                container.innerHTML = messages.map(msg => `
+                    <div class="message-card bg-gray-50 rounded-lg p-4 border border-gray-200">
+                        <div class="flex items-start justify-between mb-2">
+                            <div class="flex items-center space-x-3">
+                                <span class="agent-badge ${getAgentClass(msg.from_agent)}">${msg.from_agent}</span>
+                                <i class="fas fa-arrow-right text-gray-400 text-xs"></i>
+                                <span class="agent-badge ${getAgentClass(msg.to_agent)}">${msg.to_agent}</span>
+                                <span class="priority-badge ${getPriorityClass(msg.priority)}">${msg.priority}</span>
+                                <span class="status-badge ${getStatusClass(msg.status)}">${msg.status}</span>
+                            </div>
+                            <span class="text-xs text-gray-500">${formatTime(msg.created_at)}</span>
+                        </div>
+                        <div class="mb-2">
+                            <span class="text-xs text-gray-500 uppercase">${msg.type}</span>
+                        </div>
+                        <div class="text-gray-800 whitespace-pre-wrap">${msg.content}</div>
+                        ${msg.metadata && Object.keys(msg.metadata).length > 0 ? `
+                            <details class="mt-2">
+                                <summary class="text-xs text-gray-500 cursor-pointer">Metadata</summary>
+                                <pre class="text-xs bg-gray-100 p-2 rounded mt-2 overflow-auto">${JSON.stringify(msg.metadata, null, 2)}</pre>
+                            </details>
+                        ` : ''}
+                    </div>
+                `).join('');
+                
+                updateStats();
+            } catch (error) {
+                console.error('Error loading messages:', error);
+                document.getElementById('messagesList').innerHTML = `
+                    <div class="text-center text-red-500 py-8">
+                        <i class="fas fa-exclamation-circle text-2xl mb-2"></i>
+                        <p>Error loading messages: ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Load tasks
+        async function loadTasks() {
+            try {
+                const response = await fetch(`${API_URL}/tasks?limit=50`);
+                const data = await response.json();
+                
+                if (!data.success) throw new Error('Failed to load tasks');
+                
+                const tasks = data.tasks || [];
+                const container = document.getElementById('tasksList');
+                
+                if (tasks.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center text-gray-500 py-8">
+                            <i class="fas fa-inbox text-4xl mb-4"></i>
+                            <p>No tasks yet</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                container.innerHTML = tasks.map(task => `
+                    <div class="message-card bg-gray-50 rounded-lg p-4 border border-gray-200">
+                        <div class="flex items-start justify-between mb-2">
+                            <div class="flex items-center space-x-3">
+                                <span class="agent-badge ${getAgentClass(task.agent_owner)}">Owner: ${task.agent_owner}</span>
+                                ${task.agent_assignee ? `
+                                    <i class="fas fa-arrow-right text-gray-400 text-xs"></i>
+                                    <span class="agent-badge ${getAgentClass(task.agent_assignee)}">Assignee: ${task.agent_assignee}</span>
+                                ` : ''}
+                                <span class="priority-badge ${getPriorityClass(task.priority)}">${task.priority}</span>
+                                <span class="status-badge ${getStatusClass(task.status)}">${task.status}</span>
+                            </div>
+                            <span class="text-xs text-gray-500">${formatTime(task.created_at)}</span>
+                        </div>
+                        <h3 class="font-semibold text-gray-900 mb-1">${task.title}</h3>
+                        ${task.description ? `<p class="text-gray-700 text-sm mb-2">${task.description}</p>` : ''}
+                        ${task.deadline ? `<p class="text-xs text-gray-500">Deadline: ${new Date(task.deadline).toLocaleDateString('ru-RU')}</p>` : ''}
+                    </div>
+                `).join('');
+                
+                updateStats();
+            } catch (error) {
+                console.error('Error loading tasks:', error);
+                document.getElementById('tasksList').innerHTML = `
+                    <div class="text-center text-red-500 py-8">
+                        <i class="fas fa-exclamation-circle text-2xl mb-2"></i>
+                        <p>Error loading tasks: ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Update stats
+        async function updateStats() {
+            try {
+                const [messagesRes, tasksRes] = await Promise.all([
+                    fetch(`${API_URL}/messages`),
+                    fetch(`${API_URL}/tasks?status=open`)
+                ]);
+                
+                const messagesData = await messagesRes.json();
+                const tasksData = await tasksRes.json();
+                
+                const messages = messagesData.messages || [];
+                const tasks = tasksData.tasks || [];
+                const pending = messages.filter(m => m.status === 'pending').length;
+                
+                document.getElementById('statsMessages').textContent = messages.length;
+                document.getElementById('statsTasks').textContent = tasks.length;
+                document.getElementById('statsPending').textContent = pending;
+                document.getElementById('lastSync').textContent = new Date().toLocaleTimeString('ru-RU');
+                
+                // Update sync indicator
+                const indicator = document.getElementById('syncIndicator');
+                const statusText = document.getElementById('syncStatusText');
+                indicator.classList.remove('bg-red-400', 'bg-green-400', 'bg-gray-400');
+                indicator.classList.add('bg-green-400');
+                statusText.textContent = 'Synced';
+                
+            } catch (error) {
+                console.error('Error updating stats:', error);
+                const indicator = document.getElementById('syncIndicator');
+                const statusText = document.getElementById('syncStatusText');
+                indicator.classList.remove('bg-green-400', 'bg-gray-400');
+                indicator.classList.add('bg-red-400');
+                statusText.textContent = 'Error';
+            }
+        }
+
+        // Start auto-sync
+        function startSync() {
+            // Load initial data
+            loadMessages();
+            updateStats();
+            
+            // Auto-refresh every 10 seconds
+            syncInterval = setInterval(() => {
+                if (currentTab === 'messages') {
+                    loadMessages();
+                } else {
+                    loadTasks();
+                }
+                updateStats();
+            }, 10000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            startSync();
+        });
+    </script>
+</body>
+</html>
+

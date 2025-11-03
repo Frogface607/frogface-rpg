@@ -139,3 +139,4 @@ def calculate_reward(priority):
 
 **Готово!** Rube может работать напрямую с Supabase! 🎯
 
+
