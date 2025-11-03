@@ -3807,11 +3807,12 @@ class DetoxRPG {
     }
 
     // Переключение статуса задачи
-    toggleTask(taskId) {
+    async toggleTask(taskId) {
         const task = this.todoState.tasks.find(t => t.id === taskId);
         if (!task) return;
 
-        task.completed = !task.completed;
+        const newCompletedStatus = !task.completed;
+        task.completed = newCompletedStatus;
 
         if (task.completed) {
             // Добавляем награду
@@ -3836,6 +3837,22 @@ class DetoxRPG {
             this.gameState.todayEarnings = Math.max(0, this.gameState.todayEarnings - task.reward);
             this.todoState.earningsToday = Math.max(0, this.todoState.earningsToday - task.reward);
             this.todoState.completedToday = Math.max(0, this.todoState.completedToday - 1);
+        }
+
+        // ✅ Синхронизируем с Supabase через API
+        try {
+            await fetch(`${this.apiURL}/tasks`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    taskId: taskId,
+                    completed: newCompletedStatus
+                })
+            });
+            console.log('✅ Задача обновлена в Supabase:', taskId, 'completed:', newCompletedStatus);
+        } catch (error) {
+            console.error('❌ Ошибка синхронизации задачи с Supabase:', error);
+            // Не прерываем выполнение - пользователь может продолжить работать
         }
 
         this.saveTodoState();
@@ -4089,10 +4106,10 @@ class DetoxRPG {
             const deleteBtn = e.target.closest('.delete-task');
             
             if (toggleBtn) {
-                const taskId = parseInt(toggleBtn.dataset.taskId);
+                const taskId = toggleBtn.dataset.taskId; // Используем как строку (не parseInt)
                 this.toggleTask(taskId);
             } else if (deleteBtn) {
-                const taskId = parseInt(deleteBtn.dataset.taskId);
+                const taskId = deleteBtn.dataset.taskId; // Используем как строку (не parseInt)
                 this.deleteTask(taskId);
             }
         };

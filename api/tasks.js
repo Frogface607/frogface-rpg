@@ -4,12 +4,12 @@
  * Сохраняет в Supabase
  */
 
-import { addTask, getAllTasks } from './storage-supabase.js';
+import { addTask, getAllTasks, updateTask, findTaskById } from './storage-supabase.js';
 
 export default async function handler(req, res) {
     // CORS headers
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     
     if (req.method === 'OPTIONS') {
@@ -24,6 +24,58 @@ export default async function handler(req, res) {
         } catch (error) {
             console.error('❌ Ошибка получения задач:', error);
             return res.status(500).json({ error: 'Internal server error' });
+        }
+    }
+
+    if (req.method === 'PATCH') {
+        // Обновить задачу (например, отметить как выполненную)
+        try {
+            const { taskId, completed, priority, projectId, reward } = req.body;
+            
+            if (!taskId) {
+                return res.status(400).json({ error: 'taskId is required' });
+            }
+
+            // Проверяем что задача существует
+            const existingTask = await findTaskById(taskId);
+            if (!existingTask) {
+                return res.status(404).json({ error: 'Task not found' });
+            }
+
+            // Подготавливаем обновления
+            const updates = {};
+            if (completed !== undefined) updates.completed = completed;
+            if (priority !== undefined) updates.priority = priority;
+            if (projectId !== undefined) updates.project_id = projectId;
+            if (reward !== undefined) updates.reward = reward;
+
+            if (Object.keys(updates).length === 0) {
+                return res.status(400).json({ error: 'No updates provided' });
+            }
+
+            // Обновляем задачу в Supabase
+            const updatedTask = await updateTask(taskId, updates);
+            
+            console.log('✅ Задача обновлена в Supabase:', updatedTask);
+
+            // Форматируем ответ
+            const formattedTask = {
+                id: updatedTask.id,
+                text: updatedTask.text,
+                priority: updatedTask.priority,
+                projectId: updatedTask.project_id,
+                completed: updatedTask.completed,
+                reward: updatedTask.reward,
+                createdAt: updatedTask.created_at,
+                source: updatedTask.source,
+                source_id: updatedTask.source_id,
+                source_url: updatedTask.source_url
+            };
+
+            return res.json({ success: true, task: formattedTask });
+        } catch (error) {
+            console.error('❌ Ошибка обновления задачи:', error);
+            return res.status(500).json({ error: 'Internal server error', details: error.message });
         }
     }
 
