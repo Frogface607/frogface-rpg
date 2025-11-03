@@ -12,6 +12,15 @@ const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
  * Выполнить запрос к Supabase
  */
 async function supabaseRequest(endpoint, method = 'GET', body = null) {
+    // Проверка конфигурации
+    if (!SUPABASE_SERVICE_KEY) {
+        throw new Error('SUPABASE_SERVICE_ROLE_KEY environment variable is not set');
+    }
+    
+    if (!SUPABASE_URL) {
+        throw new Error('SUPABASE_URL environment variable is not set');
+    }
+    
     const url = `${SUPABASE_URL}/rest/v1/${endpoint}`;
     const headers = {
         'apikey': SUPABASE_SERVICE_KEY,
@@ -29,14 +38,26 @@ async function supabaseRequest(endpoint, method = 'GET', body = null) {
         options.body = JSON.stringify(body);
     }
 
-    const response = await fetch(url, options);
-    
-    if (!response.ok) {
-        const error = await response.text();
-        throw new Error(`Supabase error: ${response.status} - ${error}`);
-    }
+    try {
+        const response = await fetch(url, options);
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error(`❌ Supabase request failed: ${response.status} - ${errorText}`);
+            
+            // Если таблица не существует (404 или 42P01 - undefined table)
+            if (response.status === 404 || errorText.includes('42P01')) {
+                throw new Error(`Table does not exist. Please run the SQL schema from docs/SUPABASE_AI_COORDINATION_SCHEMA.sql in Supabase SQL Editor. Error: ${errorText}`);
+            }
+            
+            throw new Error(`Supabase error: ${response.status} - ${errorText}`);
+        }
 
-    return response.json();
+        return response.json();
+    } catch (error) {
+        console.error('❌ Supabase request error:', error);
+        throw error;
+    }
 }
 
 // ============================================

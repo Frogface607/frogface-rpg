@@ -1,0 +1,52 @@
+{
+  "name": "Weekly Progress Report for FrogFace RPG",
+  "description": "Automatically generates weekly progress reports from Supabase tasks. Fetches completed tasks from last week, aggregates statistics (rewards, streaks, top tasks), generates beautiful HTML report using OpenAI, and sends via Gmail.",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "user_email": {
+        "type": "string",
+        "description": "Email address to send the report to",
+        "required": false,
+        "default": "607orlov@gmail.com"
+      }
+    }
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "success": {
+        "type": "boolean",
+        "description": "Whether the report was generated and sent successfully"
+      },
+      "report_stats": {
+        "type": "object",
+        "properties": {
+          "total_completed": {
+            "type": "number"
+          },
+          "total_rewards": {
+            "type": "number"
+          },
+          "total_projects": {
+            "type": "number"
+          }
+        }
+      },
+      "openai_thread_id": {
+        "type": "string",
+        "description": "OpenAI thread ID for traceability"
+      },
+      "gmail_message_id": {
+        "type": "string",
+        "description": "Gmail message ID of sent report"
+      },
+      "html_preview": {
+        "type": "string",
+        "description": "First 200 characters of generated HTML"
+      }
+    }
+  },
+  "workflow_code": "import os\nfrom datetime import datetime, timedelta\nimport json\n\n# Get inputs from environment variables\nuser_email = os.environ.get('user_email', '607orlov@gmail.com')\ntimezone = os.environ.get('timezone', 'UTC')\n\nprint(f'[{datetime.utcnow().isoformat()}] Starting Weekly Progress Report Recipe')\nprint(f'   User email: {user_email}')\nprint(f'   Timezone: {timezone}')\n\n# Step 1: Calculate last week date range\ntoday = datetime.now()\nlast_week_start = today - timedelta(days=7)\nlast_week_end = today - timedelta(days=1)\n\nprint(f'[{datetime.utcnow().isoformat()}] Date range: {last_week_start.date()} to {last_week_end.date()}')\n\n# Step 2: Fetch completed tasks from Supabase\nprint(f'[{datetime.utcnow().isoformat()}] Fetching completed tasks from Supabase...')\ntasks_result, tasks_error = run_composio_tool(\n    'SUPABASE_SELECT_FROM_TABLE',\n    {\n        'project_ref': 'ydpcfolffvatbweiuekn',\n        'table': 'tasks',\n        'select': 'id,text,priority,completed,reward,created_at,project_id',\n        'filters': [\n            {'column': 'completed', 'operator': 'eq', 'value': True},\n            {'column': 'created_at', 'operator': 'gte', 'value': last_week_start.isoformat()},\n            {'column': 'created_at', 'operator': 'lte', 'value': last_week_end.isoformat()}\n        ],\n        'order': 'created_at.desc',\n        'limit': 1000\n    }\n)\n\nif tasks_error:\n    raise Exception(f'Failed to fetch tasks from Supabase: {tasks_error}')\n\ntasks = tasks_result.get('data', [])\nif not isinstance(tasks, list):\n    tasks = []\n\nprint(f'[{datetime.utcnow().isoformat()}] Found {len(tasks)} completed tasks')\n\n# Step 3: Aggregate statistics\ntotal_completed = len(tasks)\ntotal_rewards = sum(task.get('reward', 0) for task in tasks)\n\nprojects = {}\nfor task in tasks:\n    project = task.get('project_id', 'personal')\n    if project not in projects:\n        projects[project] = {'count': 0, 'rewards': 0}\n    projects[project]['count'] += 1\n    projects[project]['rewards'] += task.get('reward', 0)\n\ntop_tasks = sorted(tasks, key=lambda x: x.get('reward', 0), reverse=True)[:10]\n\nstats = {\n    'total_completed': total_completed,\n    'total_rewards': total_rewards,\n    'projects': projects,\n    'top_tasks': top_tasks[:5]\n}\n\nprint(f'[{datetime.utcnow().isoformat()}] Statistics computed')\nprint(f'   Total completed: {total_completed}')\nprint(f'   Total rewards: {total_rewards}₽')\n\n# Step 4: Generate HTML report using OpenAI\nprint(f'[{datetime.utcnow().isoformat()}] Generating HTML report with OpenAI...')\n\nthread_result, thread_error = run_composio_tool(\n    'OPENAI_CREATE_THREAD',\n    {'metadata': {'recipe': 'weekly_progress_report'}}\n)\n\nif thread_error:\n    raise Exception(f'Failed to create OpenAI thread: {thread_error}')\n\nthread_id = thread_result.get('data', {}).get('id')\nif not thread_id:\n    raise Exception('OpenAI thread ID not found')\n\nprompt = f'''Generate a beautiful HTML weekly progress report for FrogFace RPG.\n\nStatistics:\n- Total completed tasks: {total_completed}\n- Total rewards earned: {total_rewards}₽\n- Projects: {json.dumps(projects, indent=2)}\n- Top tasks: {json.dumps(top_tasks[:5], indent=2)}\n\nCreate professional HTML with header, summary, stats, top achievements, and recommendations.\nUse inline CSS. Make it colorful and engaging.\nReturn ONLY HTML code.'''\n\nhtml_result, html_error = invoke_llm(prompt)\n\nif html_error:\n    raise Exception(f'Failed to generate HTML: {html_error}')\n\nhtml_content = html_result\nhtml_preview = html_content[:200] if html_content else ''\n\nprint(f'[{datetime.utcnow().isoformat()}] HTML report generated')\n\n# Step 5: Send email\nsubject = f'Weekly Progress Report: {last_week_start.date()} — {last_week_end.date()}'\n\nemail_result, email_error = run_composio_tool(\n    'GMAIL_SEND_EMAIL',\n    {\n        'recipient_email': user_email,\n        'subject': subject,\n        'body': html_content,\n        'is_html': True\n    }\n)\n\nif email_error:\n    raise Exception(f'Failed to send email: {email_error}')\n\nmessage_id = email_result.get('data', {}).get('id', 'unknown')\n\nprint(f'[{datetime.utcnow().isoformat()}] Email sent successfully!')\n\noutput = {\n    'success': True,\n    'report_stats': {\n        'total_completed': total_completed,\n        'total_rewards': total_rewards,\n        'total_projects': len(projects)\n    },\n    'openai_thread_id': thread_id,\n    'gmail_message_id': message_id,\n    'html_preview': html_preview\n}\n\noutput"
+}
+
